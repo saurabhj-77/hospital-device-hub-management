@@ -2010,7 +2010,7 @@ const CareViaDevice = () => {
           alignItems: 'center'
         }}>
           <Typography variant="caption" sx={{ color: CARE_COLORS.gray.text }}>
-            Care via Device • Continuous remote monitoring • FDA-cleared medical devices • Version 2.4.1
+          Care via Device • Continuous remote monitoring • FDA-cleared medical devices • Version 2.4.1
           </Typography>
           <Box sx={{ display: 'flex', gap: 2 }}>
             <Tooltip title="Emergency Override">
