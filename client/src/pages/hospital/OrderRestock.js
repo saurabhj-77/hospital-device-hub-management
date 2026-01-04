@@ -1,0 +1,2669 @@
+import React, { useState, useEffect } from 'react';
+import {
+  Box,
+  Typography,
+  Card,
+  CardContent,
+  CardHeader,
+  IconButton,
+  LinearProgress,
+  Chip,
+  Avatar,
+  Button,
+  Divider,
+  Badge,
+  alpha,
+  useTheme,
+  Fade,
+  Grow,
+  Zoom,
+  Tooltip,
+  TextField,
+  InputAdornment,
+  Menu,
+  MenuItem,
+  Tabs,
+  Tab,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Select,
+  FormControl,
+  InputLabel,
+  Switch,
+  FormControlLabel,
+  Snackbar,
+  Alert,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  ListItemAvatar,
+  ListItemSecondaryAction,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Checkbox,
+  TableSortLabel,
+  TablePagination,
+  Stepper,
+  Step,
+  StepLabel,
+  StepContent,
+  Radio,
+  RadioGroup,
+  FormLabel,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  CircularProgress,
+  Slider
+} from '@mui/material';
+import {
+  Inventory as InventoryIcon,
+  ShoppingCart as ShoppingCartIcon,
+  LocalShipping as ShippingIcon,
+  History as HistoryIcon,
+  Assignment as AssignmentIcon,
+  Warning as WarningIcon,
+  Error as ErrorIcon,
+  CheckCircle as CheckCircleIcon,
+  Info as InfoIcon,
+  Refresh as RefreshIcon,
+  Search as SearchIcon,
+  FilterList as FilterIcon,
+  Download as DownloadIcon,
+  MoreVert as MoreVertIcon,
+  Add as AddIcon,
+  Edit as EditIcon,
+  Delete as DeleteIcon,
+  Visibility as VisibilityIcon,
+  Print as PrintIcon,
+  Share as ShareIcon,
+  Sync as SyncIcon,
+  CalendarToday as CalendarIcon,
+  LocationOn as LocationIcon,
+  Category as CategoryIcon,
+  Timeline as TimelineIcon,
+  Build as BuildIcon,
+  LocalOffer as LocalOfferIcon,
+  AttachMoney as MoneyIcon,
+  Close as CloseIcon,
+  Save as SaveIcon,
+  Clear as ClearIcon,
+  ExpandMore as ExpandMoreIcon,
+  TrendingUp as TrendingUpIcon,
+  TrendingDown as TrendingDownIcon,
+  Speed as SpeedIcon,
+  Person as PersonIcon,
+  Business as BusinessIcon,
+  LocalHospital as HospitalIcon,
+  Devices as DevicesIcon,
+  Notifications as NotificationsIcon,
+  PriorityHigh as PriorityHighIcon,
+  AutoAwesome as AutoAwesomeIcon,
+  Analytics as AnalyticsIcon,
+  Receipt as ReceiptIcon,
+  Inventory2 as Inventory2Icon,
+  Bolt as BoltIcon,
+  BatteryAlert as BatteryAlertIcon,
+  Timeline as TimelineIconMui,
+  AutoFixHigh as AutoFixHighIcon,
+  CompareArrows as CompareArrowsIcon
+} from '@mui/icons-material';
+import {
+  BarChart,
+  Bar,
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip as RechartsTooltip,
+  Legend,
+  ResponsiveContainer,
+  AreaChart,
+  Area,
+  PieChart,
+  Pie,
+  Cell
+} from 'recharts';
+
+// Color palette for Order & Restock
+const ORDER_COLORS = {
+  primary: { bg: '#F0F7FF', border: '#0066CC', text: '#003366' },
+  success: { bg: '#F0FFF4', border: '#38A169', text: '#22543D' },
+  warning: { bg: '#FFFBEB', border: '#D69E2E', text: '#744210' },
+  danger: { bg: '#FFF5F5', border: '#E53E3E', text: '#742A2A' },
+  info: { bg: '#EBF8FF', border: '#3182CE', text: '#234E52' },
+  purple: { bg: '#FAF5FF', border: '#805AD5', text: '#44337A' },
+  teal: { bg: '#E6FFFA', border: '#319795', text: '#234E52' },
+  gray: { bg: '#F7FAFC', border: '#718096', text: '#2D3748' },
+  processing: { bg: '#E0E7FF', border: '#4F46E5', text: '#3730A3' },
+  shipped: { bg: '#DBEAFE', border: '#2563EB', text: '#1E40AF' },
+  delivered: { bg: '#D1FAE5', border: '#059669', text: '#065F46' },
+  cancelled: { bg: '#FEE2E2', border: '#DC2626', text: '#7F1D1D' }
+};
+
+// Order Status Types
+const ORDER_STATUS = {
+  DRAFT: 'draft',
+  PENDING_APPROVAL: 'pending_approval',
+  APPROVED: 'approved',
+  PROCESSING: 'processing',
+  SHIPPED: 'shipped',
+  DELIVERED: 'delivered',
+  CANCELLED: 'cancelled'
+};
+
+// Restock Trigger Types
+const RESTOCK_TRIGGERS = {
+  USAGE_THRESHOLD: 'usage_threshold',
+  DEVICE_FAILURE: 'device_failure',
+  DEMAND_FORECAST: 'demand_forecast',
+  MANUAL: 'manual',
+  SCHEDULED: 'scheduled',
+  EMERGENCY: 'emergency'
+};
+
+// Priority Levels
+const PRIORITY_LEVELS = {
+  LOW: 'low',
+  MEDIUM: 'medium',
+  HIGH: 'high',
+  CRITICAL: 'critical'
+};
+
+// Default data structure
+const defaultOrderData = {
+  summary: {
+    totalOrders: 48,
+    pendingOrders: 12,
+    processingOrders: 8,
+    shippedOrders: 5,
+    deliveredOrders: 18,
+    cancelledOrders: 5,
+    urgentOrders: 7,
+    totalValue: '$245,800',
+    avgDeliveryTime: '3.2 days'
+  },
+  
+  orders: [
+    {
+      id: 'ORD-001',
+      deviceName: 'Cardiac Monitor Pro',
+      deviceModel: 'CMP-2024',
+      quantity: 2,
+      priority: PRIORITY_LEVELS.HIGH,
+      status: ORDER_STATUS.PROCESSING,
+      orderDate: '2024-01-15',
+      estimatedDelivery: '2024-01-25',
+      actualDelivery: null,
+      totalCost: '$25,000',
+      vendor: 'MedTech Inc.',
+      orderedBy: 'Dr. Smith',
+      department: 'Cardiology',
+      location: 'Main Hospital',
+      notes: 'Emergency restock for ICU expansion',
+      trigger: RESTOCK_TRIGGERS.EMERGENCY,
+      autoGenerated: true
+    },
+    {
+      id: 'ORD-002',
+      deviceName: 'Glucose Monitor CGM',
+      deviceModel: 'GMC-2024',
+      quantity: 5,
+      priority: PRIORITY_LEVELS.MEDIUM,
+      status: ORDER_STATUS.SHIPPED,
+      orderDate: '2024-01-10',
+      estimatedDelivery: '2024-01-20',
+      actualDelivery: null,
+      totalCost: '$43,750',
+      vendor: 'DiabetesCare Corp',
+      orderedBy: 'Nurse Johnson',
+      department: 'Endocrinology',
+      location: 'West Wing',
+      notes: 'Regular restock based on usage patterns',
+      trigger: RESTOCK_TRIGGERS.USAGE_THRESHOLD,
+      autoGenerated: true
+    },
+    {
+      id: 'ORD-003',
+      deviceName: 'Portable Ultrasound',
+      deviceModel: 'PUS-2024',
+      quantity: 1,
+      priority: PRIORITY_LEVELS.CRITICAL,
+      status: ORDER_STATUS.PENDING_APPROVAL,
+      orderDate: '2024-01-18',
+      estimatedDelivery: '2024-02-01',
+      actualDelivery: null,
+      totalCost: '$24,500',
+      vendor: 'UltraScan Inc.',
+      orderedBy: 'Dr. Wilson',
+      department: 'Radiology',
+      location: 'Imaging Center',
+      notes: 'Replacement for damaged unit',
+      trigger: RESTOCK_TRIGGERS.DEVICE_FAILURE,
+      autoGenerated: false
+    },
+    {
+      id: 'ORD-004',
+      deviceName: 'Infusion Pump',
+      deviceModel: 'IP-2024',
+      quantity: 3,
+      priority: PRIORITY_LEVELS.MEDIUM,
+      status: ORDER_STATUS.DELIVERED,
+      orderDate: '2024-01-05',
+      estimatedDelivery: '2024-01-15',
+      actualDelivery: '2024-01-14',
+      totalCost: '$22,500',
+      vendor: 'InfuTech',
+      orderedBy: 'Pharmacy Dept',
+      department: 'ICU',
+      location: 'ICU Main',
+      notes: 'Scheduled quarterly restock',
+      trigger: RESTOCK_TRIGGERS.SCHEDULED,
+      autoGenerated: true
+    },
+    {
+      id: 'ORD-005',
+      deviceName: 'Respiratory Monitor',
+      deviceModel: 'RM-2024',
+      quantity: 2,
+      priority: PRIORITY_LEVELS.HIGH,
+      status: ORDER_STATUS.APPROVED,
+      orderDate: '2024-01-12',
+      estimatedDelivery: '2024-01-22',
+      actualDelivery: null,
+      totalCost: '$31,600',
+      vendor: 'RespiraTech',
+      orderedBy: 'Dr. Chen',
+      department: 'Pulmonology',
+      location: 'Respiratory Unit',
+      notes: 'Based on demand forecasting',
+      trigger: RESTOCK_TRIGGERS.DEMAND_FORECAST,
+      autoGenerated: true
+    },
+    {
+      id: 'ORD-006',
+      deviceName: 'BP Monitor Sync',
+      deviceModel: 'BPS-2024',
+      quantity: 10,
+      priority: PRIORITY_LEVELS.LOW,
+      status: ORDER_STATUS.CANCELLED,
+      orderDate: '2024-01-08',
+      estimatedDelivery: '2024-01-18',
+      actualDelivery: null,
+      totalCost: '$32,000',
+      vendor: 'HealthMetrics Inc.',
+      orderedBy: 'Admin Sarah',
+      department: 'General Ward',
+      location: 'Storage Room A',
+      notes: 'Cancelled - budget constraints',
+      trigger: RESTOCK_TRIGGERS.MANUAL,
+      autoGenerated: false
+    },
+    {
+      id: 'ORD-007',
+      deviceName: 'Temperature Monitor',
+      deviceModel: 'TM-2024',
+      quantity: 8,
+      priority: PRIORITY_LEVELS.MEDIUM,
+      status: ORDER_STATUS.DRAFT,
+      orderDate: '2024-01-20',
+      estimatedDelivery: '2024-01-30',
+      actualDelivery: null,
+      totalCost: '$14,800',
+      vendor: 'TempGuard Corp',
+      orderedBy: 'Tech Mike',
+      department: 'Maintenance',
+      location: 'Central Storage',
+      notes: 'Draft order for review',
+      trigger: RESTOCK_TRIGGERS.MANUAL,
+      autoGenerated: false
+    },
+    {
+      id: 'ORD-008',
+      deviceName: 'ECG Monitor Pro',
+      deviceModel: 'ECG-2024',
+      quantity: 3,
+      priority: PRIORITY_LEVELS.CRITICAL,
+      status: ORDER_STATUS.PROCESSING,
+      orderDate: '2024-01-16',
+      estimatedDelivery: '2024-01-26',
+      actualDelivery: null,
+      totalCost: '$29,400',
+      vendor: 'CardioTech',
+      orderedBy: 'Emergency Dept',
+      department: 'Emergency',
+      location: 'ER Main',
+      notes: 'Emergency cardiac unit expansion',
+      trigger: RESTOCK_TRIGGERS.EMERGENCY,
+      autoGenerated: true
+    }
+  ],
+  
+  restockTriggers: [
+    {
+      id: 'TRIG-001',
+      deviceId: 'DEV-001',
+      deviceName: 'Cardiac Monitor Pro',
+      triggerType: RESTOCK_TRIGGERS.USAGE_THRESHOLD,
+      severity: 'high',
+      threshold: 85,
+      currentValue: 92,
+      department: 'Cardiology',
+      triggeredAt: '2024-01-15 10:30',
+      status: 'resolved',
+      actionTaken: 'Auto-generated order ORD-001'
+    },
+    {
+      id: 'TRIG-002',
+      deviceId: 'DEV-003',
+      deviceName: 'BP Monitor Sync',
+      triggerType: RESTOCK_TRIGGERS.DEVICE_FAILURE,
+      severity: 'critical',
+      threshold: null,
+      currentValue: null,
+      department: 'General Ward',
+      triggeredAt: '2024-01-18 14:20',
+      status: 'pending',
+      actionTaken: 'Manual order created'
+    },
+    {
+      id: 'TRIG-003',
+      deviceId: 'DEV-005',
+      deviceName: 'Portable Ultrasound',
+      triggerType: RESTOCK_TRIGGERS.DEMAND_FORECAST,
+      severity: 'medium',
+      threshold: 70,
+      currentValue: 85,
+      department: 'Radiology',
+      triggeredAt: '2024-01-17 09:15',
+      status: 'active',
+      actionTaken: 'Forecast suggests 25% increase in demand'
+    },
+    {
+      id: 'TRIG-004',
+      deviceId: 'DEV-008',
+      deviceName: 'Infusion Pump',
+      triggerType: RESTOCK_TRIGGERS.SCHEDULED,
+      severity: 'low',
+      threshold: null,
+      currentValue: null,
+      department: 'ICU',
+      triggeredAt: '2024-01-05 08:00',
+      status: 'resolved',
+      actionTaken: 'Quarterly scheduled restock completed'
+    }
+  ],
+  
+  vendors: [
+    { id: 1, name: 'MedTech Inc.', rating: 4.8, deliveryTime: '2-4 days', reliability: 98 },
+    { id: 2, name: 'DiabetesCare Corp', rating: 4.5, deliveryTime: '3-5 days', reliability: 95 },
+    { id: 3, name: 'UltraScan Inc.', rating: 4.9, deliveryTime: '5-7 days', reliability: 99 },
+    { id: 4, name: 'InfuTech', rating: 4.3, deliveryTime: '2-3 days', reliability: 92 },
+    { id: 5, name: 'RespiraTech', rating: 4.6, deliveryTime: '4-6 days', reliability: 96 },
+    { id: 6, name: 'HealthMetrics Inc.', rating: 4.2, deliveryTime: '3-4 days', reliability: 90 },
+    { id: 7, name: 'TempGuard Corp', rating: 4.4, deliveryTime: '2-3 days', reliability: 94 },
+    { id: 8, name: 'CardioTech', rating: 4.7, deliveryTime: '3-5 days', reliability: 97 }
+  ],
+  
+  demandForecast: [
+    { month: 'Jan', cardiac: 12, monitoring: 18, diagnostic: 8, surgical: 5 },
+    { month: 'Feb', cardiac: 14, monitoring: 20, diagnostic: 10, surgical: 6 },
+    { month: 'Mar', cardiac: 16, monitoring: 22, diagnostic: 12, surgical: 7 },
+    { month: 'Apr', cardiac: 15, monitoring: 21, diagnostic: 11, surgical: 6 },
+    { month: 'May', cardiac: 17, monitoring: 23, diagnostic: 13, surgical: 8 },
+    { month: 'Jun', cardiac: 18, monitoring: 24, diagnostic: 14, surgical: 9 }
+  ],
+  
+  recentActivities: [
+    { id: 1, action: 'Auto-generated order', order: 'ORD-008', user: 'System', time: '2 hours ago' },
+    { id: 2, action: 'Order approved', order: 'ORD-005', user: 'Dr. Chen', time: '1 day ago' },
+    { id: 3, action: 'Shipment dispatched', order: 'ORD-002', user: 'Vendor', time: '2 days ago' },
+    { id: 4, action: 'Delivery confirmed', order: 'ORD-004', user: 'Receiving Dept', time: '3 days ago' },
+    { id: 5, action: 'Restock trigger activated', trigger: 'TRIG-003', user: 'AI System', time: '4 days ago' }
+  ]
+};
+
+// Order & Restock Component
+const OrderRestock = () => {
+  const theme = useTheme();
+  const [orderData, setOrderData] = useState(defaultOrderData);
+  const [loading, setLoading] = useState(false);
+  const [activeTab, setActiveTab] = useState(0);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filterAnchorEl, setFilterAnchorEl] = useState(null);
+  const [selectedStatus, setSelectedStatus] = useState('all');
+  const [selectedPriority, setSelectedPriority] = useState('all');
+  const [selectedOrders, setSelectedOrders] = useState([]);
+  const [orderDialogOpen, setOrderDialogOpen] = useState(false);
+  const [selectedOrder, setSelectedOrder] = useState(null);
+  const [newOrderDialogOpen, setNewOrderDialogOpen] = useState(false);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [order, setOrder] = useState('asc');
+  const [orderBy, setOrderBy] = useState('id');
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: '',
+    severity: 'success'
+  });
+  
+  // New Order Form State
+  const [newOrder, setNewOrder] = useState({
+    deviceName: '',
+    deviceModel: '',
+    quantity: 1,
+    priority: PRIORITY_LEVELS.MEDIUM,
+    status: ORDER_STATUS.DRAFT,
+    orderDate: new Date().toISOString().split('T')[0],
+    estimatedDelivery: new Date(new Date().setDate(new Date().getDate() + 7)).toISOString().split('T')[0],
+    totalCost: '$0',
+    vendor: '',
+    orderedBy: 'System Admin',
+    department: 'General',
+    location: 'Main Hospital',
+    notes: '',
+    trigger: RESTOCK_TRIGGERS.MANUAL,
+    autoGenerated: false
+  });
+
+  useEffect(() => {
+    const loadOrderData = () => {
+      const savedData = localStorage.getItem('deviceHub_orders');
+      if (savedData) {
+        try {
+          const parsedData = JSON.parse(savedData);
+          setOrderData({
+            ...defaultOrderData,
+            ...parsedData
+          });
+        } catch (error) {
+          console.error('Error parsing order data:', error);
+          setOrderData(defaultOrderData);
+        }
+      }
+      setLoading(false);
+    };
+
+    loadOrderData();
+  }, []);
+
+  const handleRefresh = () => {
+    setLoading(true);
+    setTimeout(() => {
+      const updatedData = {
+        ...orderData,
+        summary: {
+          ...orderData.summary,
+          totalOrders: orderData.summary.totalOrders + Math.floor(Math.random() * 3)
+        }
+      };
+      
+      setOrderData(updatedData);
+      localStorage.setItem('deviceHub_orders', JSON.stringify(updatedData));
+      setLoading(false);
+      
+      setSnackbar({
+        open: true,
+        message: 'Order data refreshed successfully!',
+        severity: 'success'
+      });
+    }, 1000);
+  };
+
+  const handleFilterClick = (event) => {
+    setFilterAnchorEl(event.currentTarget);
+  };
+
+  const handleFilterClose = () => {
+    setFilterAnchorEl(null);
+  };
+
+  const handleStatusChange = (status) => {
+    setSelectedStatus(status);
+    setFilterAnchorEl(null);
+  };
+
+  const handlePriorityChange = (priority) => {
+    setSelectedPriority(priority);
+    setFilterAnchorEl(null);
+  };
+
+  const handleOrderSelect = (id) => {
+    const selectedIndex = selectedOrders.indexOf(id);
+    let newSelected = [];
+
+    if (selectedIndex === -1) {
+      newSelected = newSelected.concat(selectedOrders, id);
+    } else if (selectedIndex === 0) {
+      newSelected = newSelected.concat(selectedOrders.slice(1));
+    } else if (selectedIndex === selectedOrders.length - 1) {
+      newSelected = newSelected.concat(selectedOrders.slice(0, -1));
+    } else if (selectedIndex > 0) {
+      newSelected = newSelected.concat(
+        selectedOrders.slice(0, selectedIndex),
+        selectedOrders.slice(selectedIndex + 1)
+      );
+    }
+
+    setSelectedOrders(newSelected);
+  };
+
+  const handleSelectAllClick = (event) => {
+    if (event.target.checked) {
+      const newSelecteds = filteredOrders.map((order) => order.id);
+      setSelectedOrders(newSelecteds);
+      return;
+    }
+    setSelectedOrders([]);
+  };
+
+  const handleViewOrder = (order) => {
+    setSelectedOrder(order);
+    setOrderDialogOpen(true);
+  };
+
+  const handleCloseOrderDialog = () => {
+    setOrderDialogOpen(false);
+    setSelectedOrder(null);
+  };
+
+  // New Order Dialog Functions
+  const handleOpenNewOrderDialog = () => {
+    // Generate a new order ID
+    const nextIdNumber = orderData.orders.length + 1;
+    const newOrderId = `ORD-${String(nextIdNumber).padStart(3, '0')}`;
+    
+    setNewOrder({
+      ...newOrder,
+      id: newOrderId
+    });
+    setNewOrderDialogOpen(true);
+  };
+
+  const handleCloseNewOrderDialog = () => {
+    setNewOrderDialogOpen(false);
+    // Reset form
+    setNewOrder({
+      deviceName: '',
+      deviceModel: '',
+      quantity: 1,
+      priority: PRIORITY_LEVELS.MEDIUM,
+      status: ORDER_STATUS.DRAFT,
+      orderDate: new Date().toISOString().split('T')[0],
+      estimatedDelivery: new Date(new Date().setDate(new Date().getDate() + 7)).toISOString().split('T')[0],
+      totalCost: '$0',
+      vendor: '',
+      orderedBy: 'System Admin',
+      department: 'General',
+      location: 'Main Hospital',
+      notes: '',
+      trigger: RESTOCK_TRIGGERS.MANUAL,
+      autoGenerated: false
+    });
+  };
+
+  const handleNewOrderChange = (field, value) => {
+    setNewOrder(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+
+  const handleSubmitNewOrder = () => {
+    // Validate required fields
+    if (!newOrder.deviceName.trim() || !newOrder.deviceModel.trim() || !newOrder.vendor.trim()) {
+      setSnackbar({
+        open: true,
+        message: 'Please fill in all required fields (Device Name, Model, Vendor)',
+        severity: 'error'
+      });
+      return;
+    }
+
+    // Calculate cost if not provided
+    let totalCost = newOrder.totalCost;
+    if (totalCost === '$0' || !totalCost.startsWith('$')) {
+      // Simple calculation based on device type and quantity
+      const baseCosts = {
+        'Cardiac Monitor': 12500,
+        'Glucose Monitor': 8750,
+        'Portable Ultrasound': 24500,
+        'Infusion Pump': 7500,
+        'Respiratory Monitor': 15800,
+        'BP Monitor': 3200,
+        'Temperature Monitor': 1850,
+        'ECG Monitor': 9800
+      };
+      
+      let baseCost = 5000; // Default base cost
+      for (const [device, cost] of Object.entries(baseCosts)) {
+        if (newOrder.deviceName.includes(device)) {
+          baseCost = cost;
+          break;
+        }
+      }
+      
+      totalCost = `$${baseCost * newOrder.quantity}`;
+    }
+
+    // Create the complete order object
+    const orderToAdd = {
+      ...newOrder,
+      id: `ORD-${String(orderData.orders.length + 1).padStart(3, '0')}`,
+      totalCost: totalCost
+    };
+
+    // Update order data
+    const updatedData = {
+      ...orderData,
+      orders: [orderToAdd, ...orderData.orders],
+      summary: {
+        ...orderData.summary,
+        totalOrders: orderData.summary.totalOrders + 1,
+        pendingOrders: newOrder.status === ORDER_STATUS.PENDING_APPROVAL ? orderData.summary.pendingOrders + 1 : orderData.summary.pendingOrders,
+        processingOrders: newOrder.status === ORDER_STATUS.PROCESSING ? orderData.summary.processingOrders + 1 : orderData.summary.processingOrders,
+        urgentOrders: newOrder.priority === PRIORITY_LEVELS.CRITICAL || newOrder.priority === PRIORITY_LEVELS.HIGH ? orderData.summary.urgentOrders + 1 : orderData.summary.urgentOrders
+      },
+      recentActivities: [
+        {
+          id: orderData.recentActivities.length + 1,
+          action: 'New order created',
+          order: orderToAdd.id,
+          user: orderToAdd.orderedBy,
+          time: 'Just now'
+        },
+        ...orderData.recentActivities
+      ]
+    };
+
+    // Update total value
+    const costValue = parseInt(totalCost.replace('$', '').replace(',', '')) || 0;
+    const currentTotalValue = parseInt(orderData.summary.totalValue.replace('$', '').replace(',', '')) || 0;
+    updatedData.summary.totalValue = `$${(currentTotalValue + costValue).toLocaleString()}`;
+
+    setOrderData(updatedData);
+    localStorage.setItem('deviceHub_orders', JSON.stringify(updatedData));
+    
+    // Close dialog and show success message
+    handleCloseNewOrderDialog();
+    
+    setSnackbar({
+      open: true,
+      message: `Order "${orderToAdd.id}" created successfully!`,
+      severity: 'success'
+    });
+    
+    // Reset to Orders tab to show the new order
+    setActiveTab(0);
+  };
+
+  const handleDeleteSelected = () => {
+    if (selectedOrders.length === 0) return;
+
+    const updatedData = {
+      ...orderData,
+      orders: orderData.orders.filter(order => !selectedOrders.includes(order.id)),
+      summary: {
+        ...orderData.summary,
+        totalOrders: orderData.summary.totalOrders - selectedOrders.length
+      }
+    };
+
+    setOrderData(updatedData);
+    localStorage.setItem('deviceHub_orders', JSON.stringify(updatedData));
+    setSelectedOrders([]);
+    
+    setSnackbar({
+      open: true,
+      message: `${selectedOrders.length} order(s) deleted successfully!`,
+      severity: 'success'
+    });
+  };
+
+  const handleRequestSort = (property) => {
+    const isAsc = orderBy === property && order === 'asc';
+    setOrder(isAsc ? 'desc' : 'asc');
+    setOrderBy(property);
+  };
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
+  const getStatusColor = (status) => {
+    switch (status) {
+      case ORDER_STATUS.DRAFT:
+        return ORDER_COLORS.gray;
+      case ORDER_STATUS.PENDING_APPROVAL:
+        return ORDER_COLORS.warning;
+      case ORDER_STATUS.APPROVED:
+        return ORDER_COLORS.info;
+      case ORDER_STATUS.PROCESSING:
+        return ORDER_COLORS.processing;
+      case ORDER_STATUS.SHIPPED:
+        return ORDER_COLORS.shipped;
+      case ORDER_STATUS.DELIVERED:
+        return ORDER_COLORS.delivered;
+      case ORDER_STATUS.CANCELLED:
+        return ORDER_COLORS.cancelled;
+      default:
+        return ORDER_COLORS.gray;
+    }
+  };
+
+  const getPriorityColor = (priority) => {
+    switch (priority) {
+      case PRIORITY_LEVELS.LOW:
+        return ORDER_COLORS.info;
+      case PRIORITY_LEVELS.MEDIUM:
+        return ORDER_COLORS.warning;
+      case PRIORITY_LEVELS.HIGH:
+        return ORDER_COLORS.danger;
+      case PRIORITY_LEVELS.CRITICAL:
+        return { bg: '#FEF2F2', border: '#EF4444', text: '#7F1D1D' };
+      default:
+        return ORDER_COLORS.gray;
+    }
+  };
+
+  const getTriggerColor = (trigger) => {
+    switch (trigger) {
+      case RESTOCK_TRIGGERS.EMERGENCY:
+        return ORDER_COLORS.danger;
+      case RESTOCK_TRIGGERS.DEVICE_FAILURE:
+        return ORDER_COLORS.warning;
+      case RESTOCK_TRIGGERS.USAGE_THRESHOLD:
+        return ORDER_COLORS.info;
+      case RESTOCK_TRIGGERS.DEMAND_FORECAST:
+        return ORDER_COLORS.purple;
+      case RESTOCK_TRIGGERS.SCHEDULED:
+        return ORDER_COLORS.teal;
+      case RESTOCK_TRIGGERS.MANUAL:
+        return ORDER_COLORS.gray;
+      default:
+        return ORDER_COLORS.gray;
+    }
+  };
+
+  const formatDate = (dateString) => {
+    if (!dateString) return 'N/A';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    });
+  };
+
+  const formatDateTime = (dateTimeString) => {
+    if (!dateTimeString) return 'N/A';
+    const date = new Date(dateTimeString);
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  };
+
+  const getStatusIcon = (status) => {
+    switch (status) {
+      case ORDER_STATUS.DRAFT:
+        return <EditIcon />;
+      case ORDER_STATUS.PENDING_APPROVAL:
+        return <WarningIcon />;
+      case ORDER_STATUS.APPROVED:
+        return <CheckCircleIcon />;
+      case ORDER_STATUS.PROCESSING:
+        return <SyncIcon />;
+      case ORDER_STATUS.SHIPPED:
+        return <ShippingIcon />;
+      case ORDER_STATUS.DELIVERED:
+        return <CheckCircleIcon />;
+      case ORDER_STATUS.CANCELLED:
+        return <CloseIcon />;
+      default:
+        return <InfoIcon />;
+    }
+  };
+
+  const getPriorityIcon = (priority) => {
+    switch (priority) {
+      case PRIORITY_LEVELS.LOW:
+        return <InfoIcon />;
+      case PRIORITY_LEVELS.MEDIUM:
+        return <WarningIcon />;
+      case PRIORITY_LEVELS.HIGH:
+        return <ErrorIcon />;
+      case PRIORITY_LEVELS.CRITICAL:
+        return <AutoAwesomeIcon />;
+      default:
+        return <InfoIcon />;
+    }
+  };
+
+  const getTriggerIcon = (trigger) => {
+    switch (trigger) {
+      case RESTOCK_TRIGGERS.EMERGENCY:
+        return <AutoAwesomeIcon />;
+      case RESTOCK_TRIGGERS.DEVICE_FAILURE:
+        return <BuildIcon />;
+      case RESTOCK_TRIGGERS.USAGE_THRESHOLD:
+        return <TrendingUpIcon />;
+      case RESTOCK_TRIGGERS.DEMAND_FORECAST:
+        return <AnalyticsIcon />;
+      case RESTOCK_TRIGGERS.SCHEDULED:
+        return <CalendarIcon />;
+      case RESTOCK_TRIGGERS.MANUAL:
+        return <PersonIcon />;
+      default:
+        return <InfoIcon />;
+    }
+  };
+
+  // Filter and sort orders
+  const filteredOrders = orderData.orders.filter(order => {
+    const matchesSearch = searchQuery === '' || 
+      order.deviceName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      order.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      order.vendor.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      order.department.toLowerCase().includes(searchQuery.toLowerCase());
+
+    const matchesStatus = selectedStatus === 'all' || order.status === selectedStatus;
+    const matchesPriority = selectedPriority === 'all' || order.priority === selectedPriority;
+
+    return matchesSearch && matchesStatus && matchesPriority;
+  });
+
+  const sortedOrders = filteredOrders.sort((a, b) => {
+    if (orderBy === 'id' || orderBy === 'deviceName' || orderBy === 'vendor') {
+      return order === 'asc' 
+        ? a[orderBy].localeCompare(b[orderBy])
+        : b[orderBy].localeCompare(a[orderBy]);
+    }
+    if (orderBy === 'quantity' || orderBy === 'totalCost') {
+      const aValue = orderBy === 'quantity' ? a.quantity : parseInt(a.totalCost.replace('$', '').replace(',', ''));
+      const bValue = orderBy === 'quantity' ? b.quantity : parseInt(b.totalCost.replace('$', '').replace(',', ''));
+      return order === 'asc' ? aValue - bValue : bValue - aValue;
+    }
+    if (orderBy === 'orderDate') {
+      return order === 'asc' 
+        ? new Date(a.orderDate) - new Date(b.orderDate)
+        : new Date(b.orderDate) - new Date(a.orderDate);
+    }
+    return 0;
+  });
+
+  const paginatedOrders = sortedOrders.slice(
+    page * rowsPerPage,
+    page * rowsPerPage + rowsPerPage
+  );
+
+  // Calculate order statistics for charts
+  const orderStatusData = Object.values(ORDER_STATUS).map(status => {
+    const count = orderData.orders.filter(order => order.status === status).length;
+    return {
+      name: status.replace('_', ' ').toUpperCase(),
+      value: count,
+      color: getStatusColor(status).border
+    };
+  });
+
+  const priorityData = Object.values(PRIORITY_LEVELS).map(priority => {
+    const count = orderData.orders.filter(order => order.priority === priority).length;
+    return {
+      name: priority.toUpperCase(),
+      value: count,
+      color: getPriorityColor(priority).border
+    };
+  });
+
+  // Tab content renderer
+  const renderTabContent = () => {
+    switch (activeTab) {
+      case 0: // All Orders
+        return (
+          <Box>
+            <Card sx={{ 
+              borderRadius: 3, 
+              boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
+              backgroundColor: ORDER_COLORS.gray.bg,
+              border: `2px solid ${ORDER_COLORS.gray.border}`,
+              mb: 3
+            }}>
+              <CardContent>
+                <TableContainer component={Paper} sx={{ borderRadius: 2, boxShadow: 'none' }}>
+                  <Table>
+                    <TableHead>
+                      <TableRow>
+                        <TableCell padding="checkbox">
+                          <Checkbox
+                            indeterminate={selectedOrders.length > 0 && selectedOrders.length < filteredOrders.length}
+                            checked={filteredOrders.length > 0 && selectedOrders.length === filteredOrders.length}
+                            onChange={handleSelectAllClick}
+                          />
+                        </TableCell>
+                        <TableCell>
+                          <TableSortLabel
+                            active={orderBy === 'id'}
+                            direction={orderBy === 'id' ? order : 'asc'}
+                            onClick={() => handleRequestSort('id')}
+                          >
+                            Order ID
+                          </TableSortLabel>
+                        </TableCell>
+                        <TableCell>
+                          <TableSortLabel
+                            active={orderBy === 'deviceName'}
+                            direction={orderBy === 'deviceName' ? order : 'asc'}
+                            onClick={() => handleRequestSort('deviceName')}
+                          >
+                            Device
+                          </TableSortLabel>
+                        </TableCell>
+                        <TableCell>Quantity</TableCell>
+                        <TableCell>Priority</TableCell>
+                        <TableCell>Status</TableCell>
+                        <TableCell>Vendor</TableCell>
+                        <TableCell>Total Cost</TableCell>
+                        <TableCell align="right">Actions</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {paginatedOrders.map((order) => {
+                        const statusColor = getStatusColor(order.status);
+                        const priorityColor = getPriorityColor(order.priority);
+                        const isSelected = selectedOrders.indexOf(order.id) !== -1;
+
+                        return (
+                          <TableRow
+                            key={order.id}
+                            hover
+                            selected={isSelected}
+                            sx={{ 
+                              '&:hover': {
+                                backgroundColor: alpha(statusColor.border, 0.05)
+                              }
+                            }}
+                          >
+                            <TableCell padding="checkbox">
+                              <Checkbox
+                                checked={isSelected}
+                                onChange={() => handleOrderSelect(order.id)}
+                              />
+                            </TableCell>
+                            <TableCell>
+                              <Typography variant="body2" fontWeight="bold" sx={{ color: ORDER_COLORS.primary.text }}>
+                                {order.id}
+                              </Typography>
+                              <Typography variant="caption" sx={{ color: ORDER_COLORS.gray.text }}>
+                                {formatDate(order.orderDate)}
+                              </Typography>
+                            </TableCell>
+                            <TableCell>
+                              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                <Avatar sx={{ 
+                                  width: 32, 
+                                  height: 32, 
+                                  bgcolor: alpha(ORDER_COLORS.primary.border, 0.1),
+                                  color: ORDER_COLORS.primary.border
+                                }}>
+                                  <DevicesIcon fontSize="small" />
+                                </Avatar>
+                                <Box>
+                                  <Typography variant="body2" fontWeight="medium">
+                                    {order.deviceName}
+                                  </Typography>
+                                  <Typography variant="caption" sx={{ color: ORDER_COLORS.gray.text }}>
+                                    {order.deviceModel}
+                                  </Typography>
+                                </Box>
+                              </Box>
+                            </TableCell>
+                            <TableCell>
+                              <Chip
+                                label={order.quantity}
+                                size="small"
+                                sx={{ 
+                                  bgcolor: ORDER_COLORS.info.bg,
+                                  color: ORDER_COLORS.info.text,
+                                  border: `1px solid ${ORDER_COLORS.info.border}`
+                                }}
+                              />
+                            </TableCell>
+                            <TableCell>
+                              <Chip
+                                icon={getPriorityIcon(order.priority)}
+                                label={order.priority.toUpperCase()}
+                                size="small"
+                                sx={{ 
+                                  bgcolor: priorityColor.bg,
+                                  color: priorityColor.text,
+                                  border: `1px solid ${priorityColor.border}`
+                                }}
+                              />
+                            </TableCell>
+                            <TableCell>
+                              <Chip
+                                icon={getStatusIcon(order.status)}
+                                label={order.status.replace('_', ' ').toUpperCase()}
+                                size="small"
+                                sx={{ 
+                                  bgcolor: statusColor.bg,
+                                  color: statusColor.text,
+                                  border: `1px solid ${statusColor.border}`
+                                }}
+                              />
+                            </TableCell>
+                            <TableCell>
+                              <Box>
+                                <Typography variant="body2">
+                                  {order.vendor}
+                                </Typography>
+                                <Typography variant="caption" sx={{ color: ORDER_COLORS.gray.text }}>
+                                  {order.department}
+                                </Typography>
+                              </Box>
+                            </TableCell>
+                            <TableCell>
+                              <Typography variant="body2" fontWeight="bold" sx={{ color: ORDER_COLORS.success.text }}>
+                                {order.totalCost}
+                              </Typography>
+                            </TableCell>
+                            <TableCell align="right">
+                              <Box sx={{ display: 'flex', gap: 1, justifyContent: 'flex-end' }}>
+                                <Tooltip title="View Details">
+                                  <IconButton 
+                                    size="small"
+                                    onClick={() => handleViewOrder(order)}
+                                  >
+                                    <VisibilityIcon fontSize="small" />
+                                  </IconButton>
+                                </Tooltip>
+                                <Tooltip title="Edit">
+                                  <IconButton size="small">
+                                    <EditIcon fontSize="small" />
+                                  </IconButton>
+                                </Tooltip>
+                              </Box>
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+                
+                <TablePagination
+                  rowsPerPageOptions={[5, 10, 25]}
+                  component="div"
+                  count={filteredOrders.length}
+                  rowsPerPage={rowsPerPage}
+                  page={page}
+                  onPageChange={handleChangePage}
+                  onRowsPerPageChange={handleChangeRowsPerPage}
+                />
+              </CardContent>
+            </Card>
+
+            {selectedOrders.length > 0 && (
+              <Card sx={{ 
+                mb: 3, 
+                p: 2, 
+                borderRadius: 3,
+                backgroundColor: ORDER_COLORS.warning.bg,
+                border: `2px solid ${ORDER_COLORS.warning.border}`
+              }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <Typography variant="body2" sx={{ color: ORDER_COLORS.warning.text }}>
+                    {selectedOrders.length} order(s) selected
+                  </Typography>
+                  <Box sx={{ display: 'flex', gap: 1 }}>
+                    <Button
+                      variant="outlined"
+                      size="small"
+                      startIcon={<CheckCircleIcon />}
+                      sx={{ borderColor: ORDER_COLORS.success.border, color: ORDER_COLORS.success.text }}
+                    >
+                      Approve
+                    </Button>
+                    <Button
+                      variant="outlined"
+                      size="small"
+                      startIcon={<SyncIcon />}
+                      sx={{ borderColor: ORDER_COLORS.info.border, color: ORDER_COLORS.info.text }}
+                    >
+                      Process
+                    </Button>
+                    <Button
+                      variant="contained"
+                      size="small"
+                      startIcon={<DeleteIcon />}
+                      onClick={handleDeleteSelected}
+                      sx={{ bgcolor: ORDER_COLORS.danger.border }}
+                    >
+                      Delete
+                    </Button>
+                  </Box>
+                </Box>
+              </Card>
+            )}
+          </Box>
+        );
+
+      case 1: // Restock Triggers
+        return (
+          <Box>
+            <Card sx={{ 
+              borderRadius: 3, 
+              boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
+              backgroundColor: ORDER_COLORS.info.bg,
+              border: `2px solid ${ORDER_COLORS.info.border}`,
+              mb: 3
+            }}>
+              <CardHeader
+                title={
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                    <AutoFixHighIcon sx={{ color: ORDER_COLORS.info.border }} />
+                    <Typography variant="h6" sx={{ color: ORDER_COLORS.info.text }}>
+                      Automatic Restock Triggers
+                    </Typography>
+                  </Box>
+                }
+                subheader="AI-powered triggers that automatically initiate restocking based on various conditions"
+              />
+              <CardContent>
+                <Box sx={{ mb: 4 }}>
+                  <Typography variant="subtitle2" sx={{ color: ORDER_COLORS.gray.text, mb: 2 }}>
+                    Trigger Configuration
+                  </Typography>
+                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 3 }}>
+                    {[
+                      {
+                        title: 'Usage Threshold',
+                        icon: <TrendingUpIcon />,
+                        color: ORDER_COLORS.info,
+                        description: 'Trigger when device usage exceeds 80%',
+                        active: true,
+                        threshold: '80%',
+                        devices: 12
+                      },
+                      {
+                        title: 'Device Failure',
+                        icon: <BuildIcon />,
+                        color: ORDER_COLORS.warning,
+                        description: 'Auto-order replacement for failed devices',
+                        active: true,
+                        threshold: 'Immediate',
+                        devices: 5
+                      },
+                      {
+                        title: 'Demand Forecasting',
+                        icon: <AnalyticsIcon />,
+                        color: ORDER_COLORS.purple,
+                        description: 'Predict demand and order proactively',
+                        active: true,
+                        threshold: 'AI-Powered',
+                        devices: 8
+                      },
+                      {
+                        title: 'Scheduled Restock',
+                        icon: <CalendarIcon />,
+                        color: ORDER_COLORS.teal,
+                        description: 'Regular quarterly restocking',
+                        active: true,
+                        threshold: 'Quarterly',
+                        devices: 15
+                      },
+                      {
+                        title: 'Emergency Restock',
+                        icon: <AutoAwesomeIcon />,
+                        color: ORDER_COLORS.danger,
+                        description: 'Critical shortage alerts',
+                        active: true,
+                        threshold: 'Critical',
+                        devices: 3
+                      }
+                    ].map((trigger, index) => (
+                      <Grow in={true} timeout={500 + index * 100} key={trigger.title}>
+                        <Card sx={{ 
+                          flex: '1 1 250px', 
+                          borderRadius: 3,
+                          backgroundColor: 'white',
+                          border: `2px solid ${trigger.color.border}`,
+                          transition: 'transform 0.3s ease',
+                          '&:hover': {
+                            transform: 'translateY(-4px)'
+                          }
+                        }}>
+                          <CardContent>
+                            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
+                              <Avatar sx={{ 
+                                bgcolor: alpha(trigger.color.border, 0.1), 
+                                color: trigger.color.border 
+                              }}>
+                                {trigger.icon}
+                              </Avatar>
+                              <Chip
+                                label={trigger.active ? 'ACTIVE' : 'INACTIVE'}
+                                size="small"
+                                sx={{ 
+                                  bgcolor: trigger.active ? trigger.color.bg : ORDER_COLORS.gray.bg,
+                                  color: trigger.active ? trigger.color.text : ORDER_COLORS.gray.text
+                                }}
+                              />
+                            </Box>
+                            <Typography variant="subtitle1" fontWeight="bold" sx={{ color: trigger.color.text, mb: 1 }}>
+                              {trigger.title}
+                            </Typography>
+                            <Typography variant="body2" sx={{ color: ORDER_COLORS.gray.text, mb: 2 }}>
+                              {trigger.description}
+                            </Typography>
+                            <Divider sx={{ my: 2 }} />
+                            <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                              <Box>
+                                <Typography variant="caption" sx={{ color: ORDER_COLORS.gray.text, display: 'block' }}>
+                                  Threshold
+                                </Typography>
+                                <Typography variant="body2" sx={{ color: trigger.color.text }}>
+                                  {trigger.threshold}
+                                </Typography>
+                              </Box>
+                              <Box>
+                                <Typography variant="caption" sx={{ color: ORDER_COLORS.gray.text, display: 'block' }}>
+                                  Devices
+                                </Typography>
+                                <Typography variant="body2" sx={{ color: trigger.color.text }}>
+                                  {trigger.devices}
+                                </Typography>
+                              </Box>
+                            </Box>
+                          </CardContent>
+                        </Card>
+                      </Grow>
+                    ))}
+                  </Box>
+                </Box>
+
+                {/* Active Triggers List */}
+                <Box>
+                  <Typography variant="subtitle2" sx={{ color: ORDER_COLORS.gray.text, mb: 2 }}>
+                    Recent Trigger Events
+                  </Typography>
+                  <List sx={{ maxHeight: 300, overflow: 'auto' }}>
+                    {orderData.restockTriggers.map((trigger, index) => (
+                      <Grow in={true} timeout={300 + index * 50} key={trigger.id}>
+                        <ListItem 
+                          sx={{ 
+                            mb: 1, 
+                            borderRadius: 2,
+                            backgroundColor: 'white',
+                            border: `1px solid ${getTriggerColor(trigger.triggerType).border}`,
+                            '&:hover': {
+                              backgroundColor: alpha(getTriggerColor(trigger.triggerType).border, 0.05)
+                            }
+                          }}
+                        >
+                          <ListItemAvatar>
+                            <Avatar sx={{ 
+                              bgcolor: alpha(getTriggerColor(trigger.triggerType).border, 0.1), 
+                              color: getTriggerColor(trigger.triggerType).border 
+                            }}>
+                              {getTriggerIcon(trigger.triggerType)}
+                            </Avatar>
+                          </ListItemAvatar>
+                          <ListItemText
+                            primary={
+                              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                <Typography variant="body2" fontWeight="medium">
+                                  {trigger.deviceName}
+                                </Typography>
+                                <Chip
+                                  label={trigger.triggerType.replace('_', ' ').toUpperCase()}
+                                  size="small"
+                                  sx={{ 
+                                    bgcolor: getTriggerColor(trigger.triggerType).bg,
+                                    color: getTriggerColor(trigger.triggerType).text
+                                  }}
+                                />
+                              </Box>
+                            }
+                            secondary={
+                              <Box>
+                                <Typography variant="caption" sx={{ color: ORDER_COLORS.gray.text, display: 'block' }}>
+                                  {trigger.department} • {formatDateTime(trigger.triggeredAt)}
+                                </Typography>
+                                <Typography variant="caption" sx={{ color: ORDER_COLORS.gray.text }}>
+                                  {trigger.actionTaken}
+                                </Typography>
+                              </Box>
+                            }
+                          />
+                          <ListItemSecondaryAction>
+                            <Chip
+                              label={trigger.status.toUpperCase()}
+                              size="small"
+                              sx={{ 
+                                bgcolor: trigger.status === 'resolved' ? ORDER_COLORS.success.bg : 
+                                       trigger.status === 'pending' ? ORDER_COLORS.warning.bg : 
+                                       ORDER_COLORS.info.bg,
+                                color: trigger.status === 'resolved' ? ORDER_COLORS.success.text : 
+                                       trigger.status === 'pending' ? ORDER_COLORS.warning.text : 
+                                       ORDER_COLORS.info.text
+                              }}
+                            />
+                          </ListItemSecondaryAction>
+                        </ListItem>
+                      </Grow>
+                    ))}
+                  </List>
+                </Box>
+              </CardContent>
+            </Card>
+          </Box>
+        );
+
+      case 2: // Demand Forecast
+        return (
+          <Box>
+            <Card sx={{ 
+              borderRadius: 3, 
+              boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
+              backgroundColor: ORDER_COLORS.purple.bg,
+              border: `2px solid ${ORDER_COLORS.purple.border}`,
+              mb: 3
+            }}>
+              <CardHeader
+                title={
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                    <AnalyticsIcon sx={{ color: ORDER_COLORS.purple.border }} />
+                    <Typography variant="h6" sx={{ color: ORDER_COLORS.purple.text }}>
+                      Demand Forecasting & Analytics
+                    </Typography>
+                  </Box>
+                }
+                subheader="AI-powered demand prediction for proactive restocking"
+              />
+              <CardContent>
+                <Box sx={{ height: 300, mb: 4 }}>
+                  <Typography variant="subtitle2" sx={{ color: ORDER_COLORS.gray.text, mb: 2 }}>
+                    Device Demand Forecast (Next 6 Months)
+                  </Typography>
+                  <ResponsiveContainer width="100%" height="100%">
+                    <AreaChart data={orderData.demandForecast}>
+                      <CartesianGrid strokeDasharray="3 3" stroke={ORDER_COLORS.gray.border} />
+                      <XAxis dataKey="month" stroke={ORDER_COLORS.gray.text} />
+                      <YAxis stroke={ORDER_COLORS.gray.text} />
+                      <RechartsTooltip />
+                      <Legend />
+                      <Area type="monotone" dataKey="cardiac" stackId="1" stroke={ORDER_COLORS.danger.border} fill={alpha(ORDER_COLORS.danger.border, 0.3)} name="Cardiac Devices" />
+                      <Area type="monotone" dataKey="monitoring" stackId="1" stroke={ORDER_COLORS.info.border} fill={alpha(ORDER_COLORS.info.border, 0.3)} name="Monitoring Devices" />
+                      <Area type="monotone" dataKey="diagnostic" stackId="1" stroke={ORDER_COLORS.purple.border} fill={alpha(ORDER_COLORS.purple.border, 0.3)} name="Diagnostic Devices" />
+                      <Area type="monotone" dataKey="surgical" stackId="1" stroke={ORDER_COLORS.teal.border} fill={alpha(ORDER_COLORS.teal.border, 0.3)} name="Surgical Devices" />
+                    </AreaChart>
+                  </ResponsiveContainer>
+                </Box>
+
+                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 3, mb: 4 }}>
+                  <Card sx={{ 
+                    flex: '1 1 250px', 
+                    borderRadius: 3,
+                    backgroundColor: ORDER_COLORS.info.bg,
+                    border: `2px solid ${ORDER_COLORS.info.border}`
+                  }}>
+                    <CardContent>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
+                        <TrendingUpIcon sx={{ color: ORDER_COLORS.info.border }} />
+                        <Typography variant="subtitle1" sx={{ color: ORDER_COLORS.info.text }}>
+                          Peak Demand Period
+                        </Typography>
+                      </Box>
+                      <Typography variant="h4" fontWeight="bold" sx={{ color: ORDER_COLORS.info.text, mb: 1 }}>
+                        June 2024
+                      </Typography>
+                      <Typography variant="body2" sx={{ color: ORDER_COLORS.gray.text }}>
+                        Expected 24 monitoring devices needed
+                      </Typography>
+                    </CardContent>
+                  </Card>
+
+                  <Card sx={{ 
+                    flex: '1 1 250px', 
+                    borderRadius: 3,
+                    backgroundColor: ORDER_COLORS.warning.bg,
+                    border: `2px solid ${ORDER_COLORS.warning.border}`
+                  }}>
+                    <CardContent>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
+                        <WarningIcon sx={{ color: ORDER_COLORS.warning.border }} />
+                        <Typography variant="subtitle1" sx={{ color: ORDER_COLORS.warning.text }}>
+                          Low Stock Alert
+                        </Typography>
+                      </Box>
+                      <Typography variant="h4" fontWeight="bold" sx={{ color: ORDER_COLORS.warning.text, mb: 1 }}>
+                        8 Devices
+                      </Typography>
+                      <Typography variant="body2" sx={{ color: ORDER_COLORS.gray.text }}>
+                        Below minimum threshold levels
+                      </Typography>
+                    </CardContent>
+                  </Card>
+
+                  <Card sx={{ 
+                    flex: '1 1 250px', 
+                    borderRadius: 3,
+                    backgroundColor: ORDER_COLORS.success.bg,
+                    border: `2px solid ${ORDER_COLORS.success.border}`
+                  }}>
+                    <CardContent>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
+                        <AutoAwesomeIcon sx={{ color: ORDER_COLORS.success.border }} />
+                        <Typography variant="subtitle1" sx={{ color: ORDER_COLORS.success.text }}>
+                          AI Accuracy
+                        </Typography>
+                      </Box>
+                      <Typography variant="h4" fontWeight="bold" sx={{ color: ORDER_COLORS.success.text, mb: 1 }}>
+                        94.2%
+                      </Typography>
+                      <Typography variant="body2" sx={{ color: ORDER_COLORS.gray.text }}>
+                        Demand prediction accuracy
+                      </Typography>
+                    </CardContent>
+                  </Card>
+                </Box>
+
+                <Box>
+                  <Typography variant="subtitle2" sx={{ color: ORDER_COLORS.gray.text, mb: 2 }}>
+                    Recommended Actions
+                  </Typography>
+                  <List>
+                    {[
+                      { action: 'Order 5 additional Cardiac Monitors for Q2', priority: 'High', deadline: 'Feb 15' },
+                      { action: 'Schedule maintenance for aging infusion pumps', priority: 'Medium', deadline: 'Mar 1' },
+                      { action: 'Increase stock of portable ultrasound by 30%', priority: 'Critical', deadline: 'Jan 30' },
+                      { action: 'Review vendor contracts for better pricing', priority: 'Low', deadline: 'Apr 1' }
+                    ].map((item, index) => (
+                      <ListItem key={index} sx={{ 
+                        mb: 1, 
+                        borderRadius: 2,
+                        backgroundColor: 'white',
+                        border: `1px solid ${getPriorityColor(item.priority.toLowerCase()).border}`
+                      }}>
+                        <ListItemIcon>
+                          {getPriorityIcon(item.priority.toLowerCase())}
+                        </ListItemIcon>
+                        <ListItemText
+                          primary={item.action}
+                          secondary={`Priority: ${item.priority} • Deadline: ${item.deadline}`}
+                          primaryTypographyProps={{ variant: 'body2' }}
+                          secondaryTypographyProps={{ variant: 'caption' }}
+                        />
+                        <ListItemSecondaryAction>
+                          <Button size="small" variant="outlined">
+                            Create Order
+                          </Button>
+                        </ListItemSecondaryAction>
+                      </ListItem>
+                    ))}
+                  </List>
+                </Box>
+              </CardContent>
+            </Card>
+          </Box>
+        );
+
+      default:
+        return null;
+    }
+  };
+
+  if (loading) {
+    return (
+      <Box sx={{ 
+        display: 'flex', 
+        justifyContent: 'center', 
+        alignItems: 'center', 
+        height: '100vh',
+        flexDirection: 'column',
+        gap: 3
+      }}>
+        <Box sx={{ width: '300px', textAlign: 'center' }}>
+          <Typography variant="h5" gutterBottom sx={{ color: ORDER_COLORS.primary.text }}>
+            Loading Order & Restock
+          </Typography>
+          <LinearProgress sx={{ height: 8, borderRadius: 4, bgcolor: ORDER_COLORS.primary.bg }} />
+          <Typography variant="body2" sx={{ mt: 2, color: ORDER_COLORS.gray.text }}>
+            Loading procurement data...
+          </Typography>
+        </Box>
+      </Box>
+    );
+  }
+
+  return (
+    <Fade in={true} timeout={500}>
+      <Box sx={{ 
+        p: 3, 
+        backgroundColor: '#F8FAFC', 
+        minHeight: '100vh',
+        maxWidth: '100%',
+        overflowX: 'hidden'
+      }}>
+        {/* Header */}
+        <Grow in={true} timeout={700}>
+          <Box sx={{ 
+            mb: 4,
+            p: 3,
+            borderRadius: 3,
+            backgroundColor: ORDER_COLORS.primary.bg,
+            border: `2px solid ${ORDER_COLORS.primary.border}`,
+            position: 'relative',
+            overflow: 'hidden'
+          }}>
+            <Box sx={{ 
+              position: 'absolute', 
+              top: 0, 
+              right: 0,
+              width: 300,
+              height: 300,
+              background: `radial-gradient(circle, ${alpha(ORDER_COLORS.primary.border, 0.1)} 0%, transparent 70%)`,
+              transform: 'translate(30%, -30%)'
+            }} />
+            
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+              <Box>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 1 }}>
+                  <Avatar sx={{ 
+                    bgcolor: alpha(ORDER_COLORS.primary.border, 0.1), 
+                    color: ORDER_COLORS.primary.border,
+                    width: 56,
+                    height: 56
+                  }}>
+                    <ShoppingCartIcon fontSize="large" />
+                  </Avatar>
+                  <Box>
+                    <Typography variant="h3" fontWeight="bold" sx={{ color: ORDER_COLORS.primary.text }}>
+                      Order & Restock
+                    </Typography>
+                    <Typography variant="body1" sx={{ color: ORDER_COLORS.primary.text }}>
+                      Procurement management and automated restocking system
+                    </Typography>
+                  </Box>
+                </Box>
+              </Box>
+              
+              <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 1 }}>
+                <Chip
+                  icon={<AutoAwesomeIcon />}
+                  label="AI-POWERED"
+                  sx={{
+                    bgcolor: ORDER_COLORS.purple.border,
+                    color: 'white',
+                    fontWeight: 'bold'
+                  }}
+                  size="small"
+                />
+                <Typography variant="caption" sx={{ color: ORDER_COLORS.primary.text }}>
+                  {orderData.summary.totalOrders} total orders • {orderData.summary.totalValue} value
+                </Typography>
+                <Box sx={{ display: 'flex', gap: 1 }}>
+                  <Button
+                    variant="outlined"
+                    startIcon={<PrintIcon />}
+                    sx={{ 
+                      borderRadius: 2,
+                      borderColor: ORDER_COLORS.primary.border,
+                      color: ORDER_COLORS.primary.border
+                    }}
+                  >
+                    Reports
+                  </Button>
+                  <Button
+                    variant="contained"
+                    startIcon={<RefreshIcon />}
+                    onClick={handleRefresh}
+                    sx={{ 
+                      borderRadius: 2,
+                      bgcolor: ORDER_COLORS.primary.border,
+                      '&:hover': {
+                        bgcolor: alpha(ORDER_COLORS.primary.border, 0.9)
+                      }
+                    }}
+                  >
+                    Refresh
+                  </Button>
+                </Box>
+              </Box>
+            </Box>
+          </Box>
+        </Grow>
+
+        {/* Summary Cards */}
+        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 3, mb: 4 }}>
+          {[
+            { 
+              title: 'Total Orders', 
+              value: orderData.summary.totalOrders, 
+              icon: <ReceiptIcon />, 
+              color: ORDER_COLORS.primary,
+              trend: '+2',
+              description: 'All time'
+            },
+            { 
+              title: 'Pending Approval', 
+              value: orderData.summary.pendingOrders, 
+              icon: <WarningIcon />, 
+              color: ORDER_COLORS.warning,
+              trend: '+1',
+              description: 'Awaiting approval'
+            },
+            { 
+              title: 'Processing', 
+              value: orderData.summary.processingOrders, 
+              icon: <SyncIcon />, 
+              color: ORDER_COLORS.processing,
+              trend: '+2',
+              description: 'In progress'
+            },
+            { 
+              title: 'Urgent Orders', 
+              value: orderData.summary.urgentOrders, 
+              icon: <AutoAwesomeIcon />, 
+              color: ORDER_COLORS.danger,
+              trend: '+1',
+              description: 'High priority'
+            },
+            { 
+              title: 'Delivered', 
+              value: orderData.summary.deliveredOrders, 
+              icon: <CheckCircleIcon />, 
+              color: ORDER_COLORS.delivered,
+              trend: '+3',
+              description: 'Completed'
+            },
+            { 
+              title: 'Avg Delivery Time', 
+              value: orderData.summary.avgDeliveryTime, 
+              icon: <SpeedIcon />, 
+              color: ORDER_COLORS.info,
+              trend: '-0.2d',
+              description: 'Days to deliver'
+            }
+          ].map((item, index) => (
+            <Grow in={true} timeout={800 + index * 100} key={item.title}>
+              <Card sx={{ 
+                flex: '1 1 250px', 
+                borderRadius: 3, 
+                boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
+                backgroundColor: item.color.bg,
+                border: `2px solid ${item.color.border}`,
+                transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+                '&:hover': {
+                  transform: 'translateY(-4px)',
+                  boxShadow: '0 8px 30px rgba(0, 0, 0, 0.12)'
+                }
+              }}>
+                <CardContent>
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+                    <Avatar sx={{ 
+                      bgcolor: alpha(item.color.border, 0.1), 
+                      color: item.color.border 
+                    }}>
+                      {item.icon}
+                    </Avatar>
+                    <Chip
+                      label={item.trend}
+                      size="small"
+                      sx={{ 
+                        bgcolor: alpha(item.color.border, 0.1),
+                        color: item.color.border,
+                        fontWeight: 'bold'
+                      }}
+                    />
+                  </Box>
+                  <Typography variant="h3" fontWeight="bold" sx={{ color: item.color.text, mb: 0.5 }}>
+                    {item.value}
+                  </Typography>
+                  <Typography variant="body2" sx={{ color: item.color.text, fontWeight: 'medium' }}>
+                    {item.title}
+                  </Typography>
+                  <Typography variant="caption" sx={{ color: alpha(item.color.text, 0.7), display: 'block' }}>
+                    {item.description}
+                  </Typography>
+                </CardContent>
+              </Card>
+            </Grow>
+          ))}
+        </Box>
+
+        {/* Control Bar */}
+        <Box sx={{ display: 'flex', gap: 2, mb: 4, flexWrap: 'wrap', alignItems: 'center' }}>
+          <TextField
+            placeholder="Search orders by ID, device, vendor, or department..."
+            variant="outlined"
+            size="small"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            sx={{ 
+              flex: '1 1 300px',
+              '& .MuiOutlinedInput-root': {
+                borderRadius: 2,
+                bgcolor: 'white'
+              }
+            }}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon sx={{ color: ORDER_COLORS.gray.border }} />
+                </InputAdornment>
+              ),
+            }}
+          />
+          <Button
+            variant="outlined"
+            startIcon={<FilterIcon />}
+            onClick={handleFilterClick}
+            sx={{ 
+              borderRadius: 2,
+              borderColor: ORDER_COLORS.gray.border,
+              color: ORDER_COLORS.gray.text
+            }}
+          >
+            Filter
+          </Button>
+          <Button
+            variant="outlined"
+            startIcon={<AutoFixHighIcon />}
+            sx={{ 
+              borderRadius: 2,
+              borderColor: ORDER_COLORS.info.border,
+              color: ORDER_COLORS.info.text
+            }}
+          >
+            Auto-Restock
+          </Button>
+          <Button
+            variant="contained"
+            startIcon={<AddIcon />}
+            onClick={handleOpenNewOrderDialog}
+            sx={{ 
+              borderRadius: 2,
+              bgcolor: ORDER_COLORS.success.border,
+              '&:hover': { bgcolor: alpha(ORDER_COLORS.success.border, 0.9) }
+            }}
+          >
+            New Order
+          </Button>
+        </Box>
+
+        {/* Filter Menu */}
+        <Menu
+          anchorEl={filterAnchorEl}
+          open={Boolean(filterAnchorEl)}
+          onClose={handleFilterClose}
+        >
+          <MenuItem>
+            <Typography variant="subtitle2" sx={{ color: ORDER_COLORS.gray.text }}>
+              Filter by Status:
+            </Typography>
+          </MenuItem>
+          <MenuItem onClick={() => handleStatusChange('all')}>
+            <ListItemIcon>
+              <TimelineIconMui />
+            </ListItemIcon>
+            All Status
+          </MenuItem>
+          {Object.values(ORDER_STATUS).map(status => (
+            <MenuItem key={status} onClick={() => handleStatusChange(status)}>
+              <ListItemIcon>
+                {getStatusIcon(status)}
+              </ListItemIcon>
+              {status.replace('_', ' ').toUpperCase()}
+            </MenuItem>
+          ))}
+          <Divider />
+          <MenuItem>
+            <Typography variant="subtitle2" sx={{ color: ORDER_COLORS.gray.text }}>
+              Filter by Priority:
+            </Typography>
+          </MenuItem>
+          <MenuItem onClick={() => handlePriorityChange('all')}>
+            <ListItemIcon>
+              <CompareArrowsIcon />
+            </ListItemIcon>
+            All Priorities
+          </MenuItem>
+          {Object.values(PRIORITY_LEVELS).map(priority => (
+            <MenuItem key={priority} onClick={() => handlePriorityChange(priority)}>
+              <ListItemIcon>
+                {getPriorityIcon(priority)}
+              </ListItemIcon>
+              {priority.toUpperCase()}
+            </MenuItem>
+          ))}
+        </Menu>
+
+        {/* Active Filters Display */}
+        {(selectedStatus !== 'all' || selectedPriority !== 'all') && (
+          <Box sx={{ mb: 3, display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+            {selectedStatus !== 'all' && (
+              <Chip
+                label={`Status: ${selectedStatus}`}
+                onDelete={() => setSelectedStatus('all')}
+                deleteIcon={<CloseIcon />}
+                sx={{ 
+                  bgcolor: getStatusColor(selectedStatus).bg,
+                  color: getStatusColor(selectedStatus).text
+                }}
+              />
+            )}
+            {selectedPriority !== 'all' && (
+              <Chip
+                label={`Priority: ${selectedPriority}`}
+                onDelete={() => setSelectedPriority('all')}
+                deleteIcon={<CloseIcon />}
+                sx={{ 
+                  bgcolor: getPriorityColor(selectedPriority).bg,
+                  color: getPriorityColor(selectedPriority).text
+                }}
+              />
+            )}
+          </Box>
+        )}
+
+        {/* Tabs */}
+        <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
+          <Tabs 
+            value={activeTab} 
+            onChange={(e, newValue) => setActiveTab(newValue)}
+            variant="scrollable"
+            scrollButtons="auto"
+          >
+            <Tab 
+              label="All Orders" 
+              icon={<ReceiptIcon />} 
+              iconPosition="start" 
+              sx={{ minHeight: 48 }}
+            />
+            <Tab 
+              label="Restock Triggers" 
+              icon={<AutoFixHighIcon />} 
+              iconPosition="start" 
+              sx={{ minHeight: 48 }}
+            />
+            <Tab 
+              label="Demand Forecast" 
+              icon={<AnalyticsIcon />} 
+              iconPosition="start" 
+              sx={{ minHeight: 48 }}
+            />
+            <Tab 
+              label="Vendors" 
+              icon={<BusinessIcon />} 
+              iconPosition="start" 
+              sx={{ minHeight: 48 }}
+            />
+          </Tabs>
+        </Box>
+
+        {/* Tab Content with Smooth Transition */}
+        <Fade in={true} timeout={300} key={activeTab}>
+          <Box>
+            {activeTab === 3 ? (
+              <Card sx={{ 
+                borderRadius: 3, 
+                boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
+                backgroundColor: ORDER_COLORS.teal.bg,
+                border: `2px solid ${ORDER_COLORS.teal.border}`,
+                mb: 3
+              }}>
+                <CardHeader
+                  title={
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                      <BusinessIcon sx={{ color: ORDER_COLORS.teal.border }} />
+                      <Typography variant="h6" sx={{ color: ORDER_COLORS.teal.text }}>
+                        Vendor Management
+                      </Typography>
+                    </Box>
+                  }
+                  subheader="Preferred vendors and supplier performance"
+                />
+                <CardContent>
+                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 3 }}>
+                    {orderData.vendors.map((vendor, index) => (
+                      <Grow in={true} timeout={500 + index * 100} key={vendor.id}>
+                        <Card sx={{ 
+                          flex: '1 1 250px', 
+                          borderRadius: 3,
+                          backgroundColor: 'white',
+                          border: `2px solid ${ORDER_COLORS.teal.border}`,
+                          transition: 'transform 0.3s ease',
+                          '&:hover': {
+                            transform: 'translateY(-4px)'
+                          }
+                        }}>
+                          <CardContent>
+                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
+                              <Avatar sx={{ 
+                                bgcolor: alpha(ORDER_COLORS.teal.border, 0.1), 
+                                color: ORDER_COLORS.teal.border 
+                              }}>
+                                <BusinessIcon />
+                              </Avatar>
+                              <Box>
+                                <Typography variant="subtitle1" fontWeight="bold" sx={{ color: ORDER_COLORS.teal.text }}>
+                                  {vendor.name}
+                                </Typography>
+                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                  {[...Array(5)].map((_, i) => (
+                                    <Box
+                                      key={i}
+                                      sx={{
+                                        width: 12,
+                                        height: 12,
+                                        borderRadius: '50%',
+                                        bgcolor: i < Math.floor(vendor.rating) ? ORDER_COLORS.warning.border : ORDER_COLORS.gray.bg
+                                      }}
+                                    />
+                                  ))}
+                                  <Typography variant="caption" sx={{ color: ORDER_COLORS.gray.text }}>
+                                    {vendor.rating}
+                                  </Typography>
+                                </Box>
+                              </Box>
+                            </Box>
+                            
+                            <Divider sx={{ my: 2 }} />
+                            
+                            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
+                              <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                                <Typography variant="caption" sx={{ color: ORDER_COLORS.gray.text }}>
+                                  Delivery Time
+                                </Typography>
+                                <Typography variant="body2" sx={{ color: ORDER_COLORS.teal.text }}>
+                                  {vendor.deliveryTime}
+                                </Typography>
+                              </Box>
+                              <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                                <Typography variant="caption" sx={{ color: ORDER_COLORS.gray.text }}>
+                                  Reliability
+                                </Typography>
+                                <Typography variant="body2" sx={{ color: ORDER_COLORS.teal.text }}>
+                                  {vendor.reliability}%
+                                </Typography>
+                              </Box>
+                              <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                                <Typography variant="caption" sx={{ color: ORDER_COLORS.gray.text }}>
+                                  Active Orders
+                                </Typography>
+                                <Chip
+                                  label={Math.floor(Math.random() * 5) + 1}
+                                  size="small"
+                                  sx={{ 
+                                    bgcolor: ORDER_COLORS.info.bg,
+                                    color: ORDER_COLORS.info.text
+                                  }}
+                                />
+                              </Box>
+                            </Box>
+                            
+                            <Divider sx={{ my: 2 }} />
+                            
+                            <Button
+                              variant="outlined"
+                              fullWidth
+                              size="small"
+                              sx={{ 
+                                borderColor: ORDER_COLORS.teal.border,
+                                color: ORDER_COLORS.teal.border
+                              }}
+                            >
+                              Place Order
+                            </Button>
+                          </CardContent>
+                        </Card>
+                      </Grow>
+                    ))}
+                  </Box>
+                </CardContent>
+              </Card>
+            ) : (
+              renderTabContent()
+            )}
+          </Box>
+        </Fade>
+
+        {/* Statistics Section */}
+        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 3, mt: 4 }}>
+          {/* Order Status Distribution */}
+          <Card sx={{ 
+            flex: '1 1 400px', 
+            borderRadius: 3, 
+            boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
+            backgroundColor: ORDER_COLORS.gray.bg,
+            border: `2px solid ${ORDER_COLORS.gray.border}`
+          }}>
+            <CardHeader
+              title={
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                  <TimelineIconMui sx={{ color: ORDER_COLORS.gray.border }} />
+                  <Typography variant="h6" sx={{ color: ORDER_COLORS.gray.text }}>
+                    Order Status Distribution
+                  </Typography>
+                </Box>
+              }
+            />
+            <CardContent>
+              <Box sx={{ height: 300 }}>
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie
+                      data={orderStatusData}
+                      cx="50%"
+                      cy="50%"
+                      labelLine={false}
+                      label={(entry) => `${entry.name}: ${entry.value}`}
+                      outerRadius={80}
+                      fill="#8884d8"
+                      dataKey="value"
+                    >
+                      {orderStatusData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
+                    </Pie>
+                    <RechartsTooltip />
+                    <Legend />
+                  </PieChart>
+                </ResponsiveContainer>
+              </Box>
+            </CardContent>
+          </Card>
+
+          {/* Recent Activities */}
+          <Card sx={{ 
+            flex: '1 1 400px', 
+            borderRadius: 3, 
+            boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
+            backgroundColor: ORDER_COLORS.info.bg,
+            border: `2px solid ${ORDER_COLORS.info.border}`
+          }}>
+            <CardHeader
+              title={
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                  <HistoryIcon sx={{ color: ORDER_COLORS.info.border }} />
+                  <Typography variant="h6" sx={{ color: ORDER_COLORS.info.text }}>
+                    Recent Order Activities
+                  </Typography>
+                </Box>
+              }
+            />
+            <CardContent>
+              <List sx={{ maxHeight: 300, overflow: 'auto' }}>
+                {orderData.recentActivities.map((activity, index) => (
+                  <ListItem key={activity.id} sx={{ py: 1 }}>
+                    <ListItemAvatar>
+                      <Avatar sx={{ 
+                        width: 32, 
+                        height: 32, 
+                        bgcolor: alpha(ORDER_COLORS.info.border, 0.1),
+                        color: ORDER_COLORS.info.border 
+                      }}>
+                        {activity.user.charAt(0)}
+                      </Avatar>
+                    </ListItemAvatar>
+                    <ListItemText
+                      primary={activity.action}
+                      secondary={`${activity.order || activity.trigger} • ${activity.time}`}
+                      primaryTypographyProps={{ variant: 'body2' }}
+                      secondaryTypographyProps={{ variant: 'caption' }}
+                    />
+                  </ListItem>
+                ))}
+              </List>
+            </CardContent>
+          </Card>
+        </Box>
+
+        {/* New Order Dialog */}
+        <Dialog 
+          open={newOrderDialogOpen} 
+          onClose={handleCloseNewOrderDialog}
+          maxWidth="md"
+          fullWidth
+        >
+          <DialogTitle>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+              <Avatar sx={{ 
+                bgcolor: alpha(ORDER_COLORS.success.border, 0.1), 
+                color: ORDER_COLORS.success.border 
+              }}>
+                <AddIcon />
+              </Avatar>
+              <Box>
+                <Typography variant="h6">Create New Order</Typography>
+                <Typography variant="caption" sx={{ color: ORDER_COLORS.gray.text }}>
+                  Order medical devices for restocking
+                </Typography>
+              </Box>
+            </Box>
+          </DialogTitle>
+          <DialogContent dividers>
+            <Box sx={{ mt: 2 }}>
+              <Stepper activeStep={0} orientation="vertical" sx={{ mb: 3 }}>
+                <Step>
+                  <StepLabel>Order Details</StepLabel>
+                  <StepContent>
+                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, mt: 2 }}>
+                      <TextField
+                        fullWidth
+                        label="Device Name *"
+                        value={newOrder.deviceName}
+                        onChange={(e) => handleNewOrderChange('deviceName', e.target.value)}
+                        variant="outlined"
+                        size="small"
+                        sx={{ flex: '1 1 300px' }}
+                      />
+                      <TextField
+                        fullWidth
+                        label="Device Model *"
+                        value={newOrder.deviceModel}
+                        onChange={(e) => handleNewOrderChange('deviceModel', e.target.value)}
+                        variant="outlined"
+                        size="small"
+                        sx={{ flex: '1 1 300px' }}
+                      />
+                      <TextField
+                        fullWidth
+                        label="Quantity"
+                        type="number"
+                        value={newOrder.quantity}
+                        onChange={(e) => handleNewOrderChange('quantity', parseInt(e.target.value) || 1)}
+                        variant="outlined"
+                        size="small"
+                        sx={{ flex: '1 1 150px' }}
+                      />
+                    </Box>
+                  </StepContent>
+                </Step>
+                
+                <Step>
+                  <StepLabel>Priority & Status</StepLabel>
+                  <StepContent>
+                    <Box sx={{ mt: 2 }}>
+                      <FormControl component="fieldset" sx={{ mb: 2 }}>
+                        <FormLabel component="legend" sx={{ color: ORDER_COLORS.gray.text, mb: 1 }}>
+                          Priority Level
+                        </FormLabel>
+                        <RadioGroup
+                          value={newOrder.priority}
+                          onChange={(e) => handleNewOrderChange('priority', e.target.value)}
+                          row
+                        >
+                          {Object.values(PRIORITY_LEVELS).map((priority) => (
+                            <FormControlLabel
+                              key={priority}
+                              value={priority}
+                              control={<Radio size="small" />}
+                              label={
+                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                  {getPriorityIcon(priority)}
+                                  <Typography variant="body2">{priority.toUpperCase()}</Typography>
+                                </Box>
+                              }
+                              sx={{ mr: 3 }}
+                            />
+                          ))}
+                        </RadioGroup>
+                      </FormControl>
+                      
+                      <FormControl fullWidth size="small" sx={{ mb: 2 }}>
+                        <InputLabel>Order Status</InputLabel>
+                        <Select
+                          value={newOrder.status}
+                          label="Order Status"
+                          onChange={(e) => handleNewOrderChange('status', e.target.value)}
+                        >
+                          {Object.values(ORDER_STATUS).map((status) => (
+                            <MenuItem key={status} value={status}>
+                              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                {getStatusIcon(status)}
+                                {status.replace('_', ' ').toUpperCase()}
+                              </Box>
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                    </Box>
+                  </StepContent>
+                </Step>
+                
+                <Step>
+                  <StepLabel>Vendor & Delivery</StepLabel>
+                  <StepContent>
+                    <Box sx={{ mt: 2 }}>
+                      <FormControl fullWidth size="small" sx={{ mb: 2 }}>
+                        <InputLabel>Vendor *</InputLabel>
+                        <Select
+                          value={newOrder.vendor}
+                          label="Vendor *"
+                          onChange={(e) => handleNewOrderChange('vendor', e.target.value)}
+                        >
+                          {orderData.vendors.map((vendor) => (
+                            <MenuItem key={vendor.id} value={vendor.name}>
+                              {vendor.name} ({vendor.deliveryTime})
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                      
+                      <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
+                        <TextField
+                          fullWidth
+                          label="Order Date"
+                          type="date"
+                          value={newOrder.orderDate}
+                          onChange={(e) => handleNewOrderChange('orderDate', e.target.value)}
+                          variant="outlined"
+                          size="small"
+                          InputLabelProps={{ shrink: true }}
+                        />
+                        <TextField
+                          fullWidth
+                          label="Estimated Delivery"
+                          type="date"
+                          value={newOrder.estimatedDelivery}
+                          onChange={(e) => handleNewOrderChange('estimatedDelivery', e.target.value)}
+                          variant="outlined"
+                          size="small"
+                          InputLabelProps={{ shrink: true }}
+                        />
+                      </Box>
+                      
+                      <TextField
+                        fullWidth
+                        label="Total Cost"
+                        value={newOrder.totalCost}
+                        onChange={(e) => handleNewOrderChange('totalCost', e.target.value)}
+                        variant="outlined"
+                        size="small"
+                        placeholder="$0"
+                        InputProps={{
+                          startAdornment: <InputAdornment position="start">$</InputAdornment>,
+                        }}
+                      />
+                    </Box>
+                  </StepContent>
+                </Step>
+                
+                <Step>
+                  <StepLabel>Additional Information</StepLabel>
+                  <StepContent>
+                    <Box sx={{ mt: 2 }}>
+                      <TextField
+                        fullWidth
+                        label="Ordered By"
+                        value={newOrder.orderedBy}
+                        onChange={(e) => handleNewOrderChange('orderedBy', e.target.value)}
+                        variant="outlined"
+                        size="small"
+                        sx={{ mb: 2 }}
+                      />
+                      
+                      <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
+                        <TextField
+                          fullWidth
+                          label="Department"
+                          value={newOrder.department}
+                          onChange={(e) => handleNewOrderChange('department', e.target.value)}
+                          variant="outlined"
+                          size="small"
+                        />
+                        <TextField
+                          fullWidth
+                          label="Location"
+                          value={newOrder.location}
+                          onChange={(e) => handleNewOrderChange('location', e.target.value)}
+                          variant="outlined"
+                          size="small"
+                        />
+                      </Box>
+                      
+                      <FormControl fullWidth size="small" sx={{ mb: 2 }}>
+                        <InputLabel>Restock Trigger</InputLabel>
+                        <Select
+                          value={newOrder.trigger}
+                          label="Restock Trigger"
+                          onChange={(e) => handleNewOrderChange('trigger', e.target.value)}
+                        >
+                          {Object.values(RESTOCK_TRIGGERS).map((trigger) => (
+                            <MenuItem key={trigger} value={trigger}>
+                              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                {getTriggerIcon(trigger)}
+                                {trigger.replace('_', ' ').toUpperCase()}
+                              </Box>
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                      
+                      <TextField
+                        fullWidth
+                        label="Notes"
+                        value={newOrder.notes}
+                        onChange={(e) => handleNewOrderChange('notes', e.target.value)}
+                        variant="outlined"
+                        size="small"
+                        multiline
+                        rows={3}
+                        placeholder="Additional notes about this order..."
+                      />
+                    </Box>
+                  </StepContent>
+                </Step>
+              </Stepper>
+            </Box>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseNewOrderDialog} startIcon={<CloseIcon />}>
+              Cancel
+            </Button>
+            <Button 
+              onClick={handleSubmitNewOrder} 
+              variant="contained" 
+              startIcon={<SaveIcon />}
+              sx={{ bgcolor: ORDER_COLORS.success.border }}
+            >
+              Create Order
+            </Button>
+          </DialogActions>
+        </Dialog>
+
+        {/* Order Details Dialog */}
+        <Dialog 
+          open={orderDialogOpen} 
+          onClose={handleCloseOrderDialog}
+          maxWidth="md"
+          fullWidth
+        >
+          {selectedOrder && (
+            <>
+              <DialogTitle>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                  <Avatar sx={{ 
+                    bgcolor: alpha(getStatusColor(selectedOrder.status).border, 0.1), 
+                    color: getStatusColor(selectedOrder.status).border 
+                  }}>
+                    <ReceiptIcon />
+                  </Avatar>
+                  <Box>
+                    <Typography variant="h6">Order {selectedOrder.id}</Typography>
+                    <Typography variant="caption" sx={{ color: ORDER_COLORS.gray.text }}>
+                      {selectedOrder.deviceName} • {selectedOrder.deviceModel}
+                    </Typography>
+                  </Box>
+                </Box>
+              </DialogTitle>
+              <DialogContent dividers>
+                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 3 }}>
+                  {/* Order Information */}
+                  <Box sx={{ flex: '1 1 300px' }}>
+                    <Typography variant="subtitle2" sx={{ color: ORDER_COLORS.gray.text, mb: 2 }}>
+                      Order Information
+                    </Typography>
+                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                      <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                        <Typography variant="body2" sx={{ color: ORDER_COLORS.gray.text }}>
+                          Status:
+                        </Typography>
+                        <Chip
+                          icon={getStatusIcon(selectedOrder.status)}
+                          label={selectedOrder.status.replace('_', ' ').toUpperCase()}
+                          size="small"
+                          sx={{ 
+                            bgcolor: getStatusColor(selectedOrder.status).bg,
+                            color: getStatusColor(selectedOrder.status).text
+                          }}
+                        />
+                      </Box>
+                      <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                        <Typography variant="body2" sx={{ color: ORDER_COLORS.gray.text }}>
+                          Priority:
+                        </Typography>
+                        <Chip
+                          icon={getPriorityIcon(selectedOrder.priority)}
+                          label={selectedOrder.priority.toUpperCase()}
+                          size="small"
+                          sx={{ 
+                            bgcolor: getPriorityColor(selectedOrder.priority).bg,
+                            color: getPriorityColor(selectedOrder.priority).text
+                          }}
+                        />
+                      </Box>
+                      <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                        <Typography variant="body2" sx={{ color: ORDER_COLORS.gray.text }}>
+                          Trigger:
+                        </Typography>
+                        <Chip
+                          icon={getTriggerIcon(selectedOrder.trigger)}
+                          label={selectedOrder.trigger.replace('_', ' ').toUpperCase()}
+                          size="small"
+                          sx={{ 
+                            bgcolor: getTriggerColor(selectedOrder.trigger).bg,
+                            color: getTriggerColor(selectedOrder.trigger).text
+                          }}
+                        />
+                      </Box>
+                      <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                        <Typography variant="body2" sx={{ color: ORDER_COLORS.gray.text }}>
+                          Quantity:
+                        </Typography>
+                        <Typography variant="body2" fontWeight="medium">
+                          {selectedOrder.quantity}
+                        </Typography>
+                      </Box>
+                      <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                        <Typography variant="body2" sx={{ color: ORDER_COLORS.gray.text }}>
+                          Total Cost:
+                        </Typography>
+                        <Typography variant="body2" fontWeight="bold" sx={{ color: ORDER_COLORS.success.text }}>
+                          {selectedOrder.totalCost}
+                        </Typography>
+                      </Box>
+                    </Box>
+                  </Box>
+
+                  {/* Dates */}
+                  <Box sx={{ flex: '1 1 300px' }}>
+                    <Typography variant="subtitle2" sx={{ color: ORDER_COLORS.gray.text, mb: 2 }}>
+                      Timeline
+                    </Typography>
+                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                      <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                        <Typography variant="body2" sx={{ color: ORDER_COLORS.gray.text }}>
+                          Order Date:
+                        </Typography>
+                        <Typography variant="body2">
+                          {formatDate(selectedOrder.orderDate)}
+                        </Typography>
+                      </Box>
+                      <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                        <Typography variant="body2" sx={{ color: ORDER_COLORS.gray.text }}>
+                          Estimated Delivery:
+                        </Typography>
+                        <Typography variant="body2">
+                          {formatDate(selectedOrder.estimatedDelivery)}
+                        </Typography>
+                      </Box>
+                      {selectedOrder.actualDelivery && (
+                        <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                          <Typography variant="body2" sx={{ color: ORDER_COLORS.gray.text }}>
+                            Actual Delivery:
+                          </Typography>
+                          <Typography variant="body2">
+                            {formatDate(selectedOrder.actualDelivery)}
+                          </Typography>
+                        </Box>
+                      )}
+                      <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                        <Typography variant="body2" sx={{ color: ORDER_COLORS.gray.text }}>
+                          Days to Delivery:
+                        </Typography>
+                        <Typography variant="body2">
+                          {selectedOrder.actualDelivery 
+                            ? Math.ceil((new Date(selectedOrder.actualDelivery) - new Date(selectedOrder.orderDate)) / (1000 * 60 * 60 * 24))
+                            : 'Pending'} days
+                        </Typography>
+                      </Box>
+                    </Box>
+                  </Box>
+
+                  {/* Vendor & Contact */}
+                  <Box sx={{ flex: '1 1 300px' }}>
+                    <Typography variant="subtitle2" sx={{ color: ORDER_COLORS.gray.text, mb: 2 }}>
+                      Vendor & Contact
+                    </Typography>
+                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                      <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                        <Typography variant="body2" sx={{ color: ORDER_COLORS.gray.text }}>
+                          Vendor:
+                        </Typography>
+                        <Typography variant="body2" fontWeight="medium">
+                          {selectedOrder.vendor}
+                        </Typography>
+                      </Box>
+                      <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                        <Typography variant="body2" sx={{ color: ORDER_COLORS.gray.text }}>
+                          Ordered By:
+                        </Typography>
+                        <Typography variant="body2">
+                          {selectedOrder.orderedBy}
+                        </Typography>
+                      </Box>
+                      <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                        <Typography variant="body2" sx={{ color: ORDER_COLORS.gray.text }}>
+                          Department:
+                        </Typography>
+                        <Typography variant="body2">
+                          {selectedOrder.department}
+                        </Typography>
+                      </Box>
+                      <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                        <Typography variant="body2" sx={{ color: ORDER_COLORS.gray.text }}>
+                          Location:
+                        </Typography>
+                        <Typography variant="body2">
+                          {selectedOrder.location}
+                        </Typography>
+                      </Box>
+                    </Box>
+                  </Box>
+                </Box>
+
+                {/* Notes */}
+                {selectedOrder.notes && (
+                  <Box sx={{ mt: 3 }}>
+                    <Typography variant="subtitle2" sx={{ color: ORDER_COLORS.gray.text, mb: 1 }}>
+                      Notes
+                    </Typography>
+                    <Card sx={{ p: 2, bgcolor: ORDER_COLORS.gray.bg }}>
+                      <Typography variant="body2">
+                        {selectedOrder.notes}
+                      </Typography>
+                    </Card>
+                  </Box>
+                )}
+
+                {/* Auto-Generated Indicator */}
+                {selectedOrder.autoGenerated && (
+                  <Box sx={{ mt: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <AutoAwesomeIcon fontSize="small" sx={{ color: ORDER_COLORS.purple.border }} />
+                    <Typography variant="caption" sx={{ color: ORDER_COLORS.purple.text }}>
+                      This order was auto-generated by the AI restock system
+                    </Typography>
+                  </Box>
+                )}
+              </DialogContent>
+              <DialogActions>
+                <Button onClick={handleCloseOrderDialog}>Close</Button>
+                {selectedOrder.status === ORDER_STATUS.DRAFT && (
+                  <Button variant="contained" startIcon={<CheckCircleIcon />}>
+                    Submit for Approval
+                  </Button>
+                )}
+                {selectedOrder.status === ORDER_STATUS.PENDING_APPROVAL && (
+                  <Button variant="contained" startIcon={<CheckCircleIcon />}>
+                    Approve Order
+                  </Button>
+                )}
+                {selectedOrder.status === ORDER_STATUS.APPROVED && (
+                  <Button variant="contained" startIcon={<SyncIcon />}>
+                    Process Order
+                  </Button>
+                )}
+              </DialogActions>
+            </>
+          )}
+        </Dialog>
+
+        {/* Snackbar */}
+        <Snackbar
+          open={snackbar.open}
+          autoHideDuration={6000}
+          onClose={() => setSnackbar(prev => ({ ...prev, open: false }))}
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+        >
+          <Alert 
+            onClose={() => setSnackbar(prev => ({ ...prev, open: false }))} 
+            severity={snackbar.severity}
+            sx={{ width: '100%' }}
+          >
+            {snackbar.message}
+          </Alert>
+        </Snackbar>
+
+        {/* Footer */}
+        <Box sx={{ 
+          mt: 4, 
+          pt: 2, 
+          borderTop: `1px solid ${ORDER_COLORS.gray.border}`,
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center'
+        }}>
+          <Typography variant="caption" sx={{ color: ORDER_COLORS.gray.text }}>
+            Order & Restock • AI-powered procurement management • Last updated: Today
+          </Typography>
+          <Box sx={{ display: 'flex', gap: 2 }}>
+            <Tooltip title="Export Orders">
+              <IconButton size="small" sx={{ color: ORDER_COLORS.gray.border }}>
+                <DownloadIcon />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Print Report">
+              <IconButton size="small" sx={{ color: ORDER_COLORS.gray.border }}>
+                <PrintIcon />
+              </IconButton>
+            </Tooltip>
+          </Box>
+        </Box>
+      </Box>
+    </Fade>
+  );
+};
+
+export default OrderRestock;
