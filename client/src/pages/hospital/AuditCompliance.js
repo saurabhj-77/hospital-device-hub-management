@@ -643,104 +643,178 @@ const AuditCompliance = () => {
       </Box>
 
       {/* Compliance Overview Cards */}
-      <Box sx={{ display: 'flex', gap: 3, mb: 4, flexWrap: 'wrap' }}>
-        <motion.div whileHover={{ scale: 1.02 }} style={{ flex: 1, minWidth: 200 }}>
-          <Card>
-            <CardContent>
-              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <Box>
-                  <Typography color="text.secondary" gutterBottom>
-                    Overall Compliance Score
-                  </Typography>
-                  <Typography variant="h4" color="success.main">
-                    {complianceStats.overallScore}%
-                  </Typography>
-                </Box>
-                <Avatar sx={{ bgcolor: 'success.light' }}>
-                  <GppGood />
-                </Avatar>
-              </Box>
-              <LinearProgress 
-                variant="determinate" 
-                value={complianceStats.overallScore}
-                sx={{ mt: 2 }}
-                color="success"
-              />
-            </CardContent>
-          </Card>
-        </motion.div>
+<Box sx={{ display: 'flex', gap: 3, mb: 4, flexWrap: 'wrap' }}>
 
-        <motion.div whileHover={{ scale: 1.02 }} style={{ flex: 1, minWidth: 200 }}>
-          <Card>
-            <CardContent>
-              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <Box>
-                  <Typography color="text.secondary" gutterBottom>
-                    Critical Issues
-                  </Typography>
-                  <Typography variant="h4" color="error.main">
-                    {complianceStats.criticalIssues}
-                  </Typography>
-                </Box>
-                <Avatar sx={{ bgcolor: 'error.light' }}>
-                  <GppBad />
-                </Avatar>
-              </Box>
-              <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                {complianceStats.pendingActions} actions pending
-              </Typography>
-            </CardContent>
-          </Card>
-        </motion.div>
+  {/* Overall Compliance Score */}
+  <motion.div whileHover={{ y: -6 }} transition={{ duration: 0.25 }} style={{ flex: 1, minWidth: 220 }}>
+    <Card
+      sx={{
+        borderRadius: 3,
+        background: 'linear-gradient(180deg, #E9F7EF, #FFFFFF)',
+        boxShadow: '0 10px 30px rgba(0,0,0,0.08)'
+      }}
+    >
+      <CardContent>
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <Box>
+            <Typography sx={{ color: '#000', fontWeight: 600 }} gutterBottom>
+              Overall Compliance Score
+            </Typography>
+            <Typography variant="h4" sx={{ color: '#000', fontWeight: 700 }}>
+              {complianceStats.overallScore}%
+            </Typography>
+          </Box>
 
-        <motion.div whileHover={{ scale: 1.02 }} style={{ flex: 1, minWidth: 200 }}>
-          <Card>
-            <CardContent>
-              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <Box>
-                  <Typography color="text.secondary" gutterBottom>
-                    Certifications Status
-                  </Typography>
-                  <Typography variant="h4">
-                    {complianceStats.certificationsValid}
-                  </Typography>
-                </Box>
-                <Avatar sx={{ bgcolor: 'info.light' }}>
-                  <Assignment />
-                </Avatar>
-              </Box>
-              <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                {complianceStats.certificationsExpiring} expiring soon
-              </Typography>
-            </CardContent>
-          </Card>
-        </motion.div>
+          <Avatar
+            sx={{
+              bgcolor:  'primary.light' ,
+              width: 48,
+              height: 48
+            }}
+          >
+            <GppGood />
+          </Avatar>
+        </Box>
 
-        <motion.div whileHover={{ scale: 1.02 }} style={{ flex: 1, minWidth: 200 }}>
-          <Card>
-            <CardContent>
-              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <Box>
-                  <Typography color="text.secondary" gutterBottom>
-                    Total Audit Records
-                  </Typography>
-                  <Typography variant="h4">
-                    {complianceStats.totalAudits.toLocaleString()}
-                  </Typography>
-                </Box>
-                <Avatar sx={{ bgcolor: 'primary.light' }}>
-                  <History />
-                </Avatar>
-              </Box>
-              <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                    Last 30 days: {auditLogs.filter(log => 
-                    new Date(log.timestamp) > new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
-                    ).length}
-              </Typography>
-            </CardContent>
-          </Card>
-        </motion.div>
-      </Box>
+        <LinearProgress
+          variant="determinate"
+          value={complianceStats.overallScore}
+          sx={{
+            mt: 2,
+            height: 6,
+            borderRadius: 3,
+            backgroundColor: '#CDEEDC',
+            '& .MuiLinearProgress-bar': {
+              backgroundColor: '#000'
+            }
+          }}
+        />
+      </CardContent>
+    </Card>
+  </motion.div>
+
+  {/* Critical Issues */}
+  <motion.div whileHover={{ y: -6 }} transition={{ duration: 0.25 }} style={{ flex: 1, minWidth: 220 }}>
+    <Card
+      sx={{
+        borderRadius: 3,
+        background: 'linear-gradient(180deg, #FDECEA, #FFFFFF)',
+        boxShadow: '0 10px 30px rgba(0,0,0,0.08)'
+      }}
+    >
+      <CardContent>
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <Box>
+            <Typography sx={{ color: '#000', fontWeight: 600 }} gutterBottom>
+              Critical Issues
+            </Typography>
+            <Typography variant="h4" sx={{ color: '#000', fontWeight: 700 }}>
+              {complianceStats.criticalIssues}
+            </Typography>
+          </Box>
+
+          <Avatar
+            sx={{
+              bgcolor: 'primary.light',
+              width: 48,
+              height: 48
+            }}
+          >
+            <GppBad />
+          </Avatar>
+        </Box>
+
+        <Typography variant="body2" sx={{ mt: 1, color: '#333' }}>
+          {complianceStats.pendingActions} actions pending
+        </Typography>
+      </CardContent>
+    </Card>
+  </motion.div>
+
+  {/* Certifications Status */}
+  <motion.div whileHover={{ y: -6 }} transition={{ duration: 0.25 }} style={{ flex: 1, minWidth: 220 }}>
+    <Card
+      sx={{
+        borderRadius: 3,
+        background: 'linear-gradient(180deg, #E3F2FD, #FFFFFF)',
+        boxShadow: '0 10px 30px rgba(0,0,0,0.08)'
+      }}
+    >
+      <CardContent>
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <Box>
+            <Typography sx={{ color: '#000', fontWeight: 600 }} gutterBottom>
+              Certifications Status
+            </Typography>
+            <Typography variant="h4" sx={{ color: '#000', fontWeight: 700 }}>
+              {complianceStats.certificationsValid}
+            </Typography>
+          </Box>
+
+          <Avatar
+            sx={{
+              bgcolor: 'primary.light' ,
+              width: 48,
+              height: 48
+            }}
+          >
+            <Assignment />
+          </Avatar>
+        </Box>
+
+        <Typography variant="body2" sx={{ mt: 1, color: '#333' }}>
+          {complianceStats.certificationsExpiring} expiring soon
+        </Typography>
+      </CardContent>
+    </Card>
+  </motion.div>
+
+  {/* Total Audit Records */}
+  <motion.div whileHover={{ y: -6 }} transition={{ duration: 0.25 }} style={{ flex: 1, minWidth: 220 }}>
+    <Card
+      sx={{
+        borderRadius: 3,
+        background: 'linear-gradient(180deg, #F3E8FF, #FFFFFF)',
+        boxShadow: '0 10px 30px rgba(0,0,0,0.08)'
+      }}
+    >
+      <CardContent>
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <Box>
+            <Typography sx={{ color: '#000', fontWeight: 600 }} gutterBottom>
+              Total Audit Records
+            </Typography>
+            <Typography variant="h4" sx={{ color: '#000', fontWeight: 700 }}>
+              {complianceStats.totalAudits.toLocaleString()}
+            </Typography>
+          </Box>
+
+          <Avatar
+            sx={{
+              bgcolor: 'primary.light' ,
+              width: 48,
+              height: 48
+            }}
+          >
+            <History />
+          </Avatar>
+        </Box>
+
+        <Typography variant="body2" sx={{ mt: 1, color: '#333' }}>
+          Last 30 days:{' '}
+          {
+            auditLogs.filter(log =>
+              new Date(log.timestamp) >
+              new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
+            ).length
+          }
+        </Typography>
+      </CardContent>
+    </Card>
+  </motion.div>
+
+</Box>
+
 
       {/* Charts Section */}
       <Box sx={{ display: 'flex', gap: 3, mb: 4 }}>

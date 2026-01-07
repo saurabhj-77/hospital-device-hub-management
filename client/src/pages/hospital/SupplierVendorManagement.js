@@ -556,102 +556,172 @@ const DeviceSupplierVendorManagement = () => {
       </Box>
 
       {/* Stats Cards */}
-      <Box sx={{ display: 'flex', gap: 3, mb: 4, flexWrap: 'wrap' }}>
-        <motion.div whileHover={{ scale: 1.02 }} style={{ flex: 1, minWidth: 200 }}>
-          <Card>
-            <CardContent>
-              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <Box>
-                  <Typography color="text.secondary" gutterBottom>
-                    Total Suppliers
-                  </Typography>
-                  <Typography variant="h4">
-                    {stats.totalSuppliers}
-                  </Typography>
-                </Box>
-                <Avatar sx={{ bgcolor: 'primary.light' }}>
-                  <Business />
-                </Avatar>
-              </Box>
-              <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                {stats.preferredSuppliers} preferred vendors
-              </Typography>
-            </CardContent>
-          </Card>
-        </motion.div>
+<Box sx={{ display: 'flex', gap: 3, mb: 4, flexWrap: 'wrap' }}>
 
-        <motion.div whileHover={{ scale: 1.02 }} style={{ flex: 1, minWidth: 200 }}>
-          <Card>
-            <CardContent>
-              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <Box>
-                  <Typography color="text.secondary" gutterBottom>
-                    Active Contracts
-                  </Typography>
-                  <Typography variant="h4" color="success.main">
-                    {stats.activeContracts}
-                  </Typography>
-                </Box>
-                <Avatar sx={{ bgcolor: 'success.light' }}>
-                  <FileCopy />
-                </Avatar>
-              </Box>
-              <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                {stats.expiringSoon} expiring soon
-              </Typography>
-            </CardContent>
-          </Card>
-        </motion.div>
+  {/* Total Suppliers */}
+  <motion.div whileHover={{ y: -6 }} transition={{ duration: 0.25 }} style={{ flex: 1, minWidth: 220 }}>
+    <Card
+      sx={{
+        borderRadius: 3,
+        background: 'linear-gradient(180deg, #E3F2FD, #FFFFFF)',
+        boxShadow: '0 10px 30px rgba(0,0,0,0.08)'
+      }}
+    >
+      <CardContent>
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <Box>
+            <Typography sx={{ color: '#000', fontWeight: 700 }} gutterBottom>
+              Total Suppliers
+            </Typography>
+            <Typography variant="h4" sx={{ color: '#000', fontWeight: 700 }}>
+              {stats.totalSuppliers}
+            </Typography>
+          </Box>
 
-        <motion.div whileHover={{ scale: 1.02 }} style={{ flex: 1, minWidth: 200 }}>
-          <Card>
-            <CardContent>
-              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <Box>
-                  <Typography color="text.secondary" gutterBottom>
-                    Total Contract Value
-                  </Typography>
-                  <Typography variant="h4" color="info.main">
-                    {formatCurrency(stats.totalContractValue)}
-                  </Typography>
-                </Box>
-                <Avatar sx={{ bgcolor: 'info.light' }}>
-                  <AttachMoney />
-                </Avatar>
-              </Box>
-              <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                Average rating: {stats.averageRating.toFixed(1)}/5
-              </Typography>
-            </CardContent>
-          </Card>
-        </motion.div>
+          <Avatar
+            sx={{
+              bgcolor: 'primary.light' ,
+              width: 48,
+              height: 48
+            }}
+          >
+            <Business />
+          </Avatar>
+        </Box>
 
-        <motion.div whileHover={{ scale: 1.02 }} style={{ flex: 1, minWidth: 200 }}>
-          <Card>
-            <CardContent>
-              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <Box>
-                  <Typography color="text.secondary" gutterBottom>
-                    Performance Score
-                  </Typography>
-                  <Typography variant="h4" color="warning.main">
-                    94.2%
-                  </Typography>
-                </Box>
-                <Avatar sx={{ bgcolor: 'warning.light' }}>
-                  <TrendingUp />
-                </Avatar>
-              </Box>
-              <LinearProgress 
-                variant="determinate" 
-                value={94.2}
-                sx={{ mt: 2 }}
-                color="warning"
-              />
-            </CardContent>
-          </Card>
-        </motion.div>
-      </Box>
+        <Typography variant="body2" sx={{ mt: 1, color: '#333' }}>
+          {stats.preferredSuppliers} preferred vendors
+        </Typography>
+      </CardContent>
+    </Card>
+  </motion.div>
+
+  {/* Active Contracts */}
+  <motion.div whileHover={{ y: -6 }} transition={{ duration: 0.25 }} style={{ flex: 1, minWidth: 220 }}>
+    <Card
+      sx={{
+        borderRadius: 3,
+        background: 'linear-gradient(180deg, #E6F4EA, #FFFFFF)',
+        boxShadow: '0 10px 30px rgba(0,0,0,0.08)'
+      }}
+    >
+      <CardContent>
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <Box>
+            <Typography sx={{ color: '#000', fontWeight: 700 }} gutterBottom>
+              Active Contracts
+            </Typography>
+            <Typography variant="h4" sx={{ color: '#000', fontWeight: 700 }}>
+              {stats.activeContracts}
+            </Typography>
+          </Box>
+
+          <Avatar
+            sx={{
+              bgcolor: 'primary.light' ,
+              width: 48,
+              height: 48
+            }}
+          >
+            <FileCopy />
+          </Avatar>
+        </Box>
+
+        <Typography variant="body2" sx={{ mt: 1, color: '#333' }}>
+          {stats.expiringSoon} expiring soon
+        </Typography>
+      </CardContent>
+    </Card>
+  </motion.div>
+
+  {/* Total Contract Value */}
+  <motion.div whileHover={{ y: -6 }} transition={{ duration: 0.25 }} style={{ flex: 1, minWidth: 220 }}>
+    <Card
+      sx={{
+        borderRadius: 3,
+        background: 'linear-gradient(180deg, #F3E8FF, #FFFFFF)',
+        boxShadow: '0 10px 30px rgba(0,0,0,0.08)'
+      }}
+    >
+      <CardContent>
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <Box>
+            <Typography sx={{ color: '#000', fontWeight: 700 }} gutterBottom>
+              Total Contract Value
+            </Typography>
+            <Typography variant="h4" sx={{ color: '#000', fontWeight: 700 }}>
+              {formatCurrency(stats.totalContractValue)}
+            </Typography>
+          </Box>
+
+          <Avatar
+            sx={{
+              bgcolor: 'primary.light' ,
+              width: 48,
+              height: 48
+            }}
+          >
+            <AttachMoney />
+          </Avatar>
+        </Box>
+
+        <Typography variant="body2" sx={{ mt: 1, color: '#333' }}>
+          Average rating: {stats.averageRating.toFixed(1)}/5
+        </Typography>
+      </CardContent>
+    </Card>
+  </motion.div>
+
+  {/* Performance Score */}
+  <motion.div whileHover={{ y: -6 }} transition={{ duration: 0.25 }} style={{ flex: 1, minWidth: 220 }}>
+    <Card
+      sx={{
+        borderRadius: 3,
+        background: 'linear-gradient(180deg, #FFF4E5, #FFFFFF)',
+        boxShadow: '0 10px 30px rgba(0,0,0,0.08)'
+      }}
+    >
+      <CardContent>
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <Box>
+            <Typography sx={{ color: '#000', fontWeight: 700 }} gutterBottom>
+              Performance Score
+            </Typography>
+            <Typography variant="h4" sx={{ color: '#000', fontWeight: 700 }}>
+              94.2%
+            </Typography>
+          </Box>
+
+          <Avatar
+            sx={{
+              bgcolor: 'primary.light',
+              width: 48,
+              height: 48
+            }}
+          >
+            <TrendingUp />
+          </Avatar>
+        </Box>
+
+        <LinearProgress
+          variant="determinate"
+          value={94.2}
+          sx={{
+            mt: 2,
+            height: 6,
+            borderRadius: 3,
+            backgroundColor: '#FFE8A1',
+            '& .MuiLinearProgress-bar': {
+              backgroundColor: '#000'
+            }
+          }}
+        />
+      </CardContent>
+    </Card>
+  </motion.div>
+
+</Box>
+
 
       {/* Main Content Tabs */}
       <Card sx={{ mb: 4 }}>

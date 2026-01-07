@@ -633,102 +633,152 @@ const DepartmentDeviceAllocation = () => {
       </Box>
 
       {/* Stats Cards */}
-      <Box sx={{ display: 'flex', gap: 3, mb: 4, flexWrap: 'wrap' }}>
-        <motion.div whileHover={{ scale: 1.02 }} style={{ flex: 1, minWidth: 200 }}>
-          <Card>
-            <CardContent>
-              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <Box>
-                  <Typography color="text.secondary" gutterBottom>
-                    Allocated Devices
-                  </Typography>
-                  <Typography variant="h4">
-                    {stats.totalAllocated}
-                  </Typography>
-                </Box>
-                <Avatar sx={{ bgcolor: 'primary.light' }}>
-                  <DeviceHub />
-                </Avatar>
-              </Box>
-              <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                {stats.ownedDevices} owned, {stats.borrowedDevices} borrowed
-              </Typography>
-            </CardContent>
-          </Card>
-        </motion.div>
+<Box sx={{ display: 'flex', gap: 3, mb: 4, flexWrap: 'wrap' }}>
 
-        <motion.div whileHover={{ scale: 1.02 }} style={{ flex: 1, minWidth: 200 }}>
-          <Card>
-            <CardContent>
-              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <Box>
-                  <Typography color="text.secondary" gutterBottom>
-                    Average Utilization
-                  </Typography>
-                  <Typography variant="h4" color="success.main">
-                    {stats.averageUtilization.toFixed(1)}%
-                  </Typography>
-                </Box>
-                <Avatar sx={{ bgcolor: 'success.light' }}>
-                  <TrendingUp />
-                </Avatar>
-              </Box>
-              <LinearProgress 
-                variant="determinate" 
-                value={stats.averageUtilization}
-                sx={{ mt: 2 }}
-                color="success"
-              />
-            </CardContent>
-          </Card>
-        </motion.div>
+  {/* Allocated Devices */}
+  <motion.div whileHover={{ y: -6 }} transition={{ duration: 0.25 }} style={{ flex: 1, minWidth: 220 }}>
+    <Card
+      sx={{
+        borderRadius: 3,
+        background: 'linear-gradient(180deg, #F5F9FF, #FFFFFF)',
+        boxShadow: '0 10px 30px rgba(0,0,0,0.08)'
+      }}
+    >
+      <CardContent>
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <Box>
+            <Typography sx={{ color: '#000', fontWeight: 600 }} gutterBottom>
+              Allocated Devices
+            </Typography>
+            <Typography variant="h4" sx={{ color: '#000', fontWeight: 700 }}>
+              {stats.totalAllocated}
+            </Typography>
+          </Box>
 
-        <motion.div whileHover={{ scale: 1.02 }} style={{ flex: 1, minWidth: 200 }}>
-          <Card>
-            <CardContent>
-              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <Box>
-                  <Typography color="text.secondary" gutterBottom>
-                    Monthly Cost
-                  </Typography>
-                  <Typography variant="h4" color="info.main">
-                    {formatCurrency(stats.totalMonthlyCost)}
-                  </Typography>
-                </Box>
-                <Avatar sx={{ bgcolor: 'info.light' }}>
-                  <AttachMoney />
-                </Avatar>
-              </Box>
-              <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                {stats.underutilizedDevices} underutilized devices
-              </Typography>
-            </CardContent>
-          </Card>
-        </motion.div>
+          {/* ICON COLOR UNCHANGED */}
+          <Avatar sx={{ bgcolor: 'primary.light' }}>
+            <DeviceHub />
+          </Avatar>
+        </Box>
 
-        <motion.div whileHover={{ scale: 1.02 }} style={{ flex: 1, minWidth: 200 }}>
-          <Card>
-            <CardContent>
-              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <Box>
-                  <Typography color="text.secondary" gutterBottom>
-                    Alerts & Issues
-                  </Typography>
-                  <Typography variant="h4" color="warning.main">
-                    {stats.overdueReturns + stats.underutilizedDevices}
-                  </Typography>
-                </Box>
-                <Avatar sx={{ bgcolor: 'warning.light' }}>
-                  <Warning />
-                </Avatar>
-              </Box>
-              <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                {stats.overdueReturns} overdue, {stats.underutilizedDevices} underutilized
-              </Typography>
-            </CardContent>
-          </Card>
-        </motion.div>
-      </Box>
+        <Typography variant="body2" sx={{ mt: 1, color: '#333' }}>
+          {stats.ownedDevices} owned, {stats.borrowedDevices} borrowed
+        </Typography>
+      </CardContent>
+    </Card>
+  </motion.div>
+
+  {/* Average Utilization */}
+  <motion.div whileHover={{ y: -6 }} transition={{ duration: 0.25 }} style={{ flex: 1, minWidth: 220 }}>
+    <Card
+      sx={{
+        borderRadius: 3,
+        background: 'linear-gradient(180deg, #F1FBF5, #FFFFFF)',
+        boxShadow: '0 10px 30px rgba(0,0,0,0.08)'
+      }}
+    >
+      <CardContent>
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <Box>
+            <Typography sx={{ color: '#000', fontWeight: 600 }} gutterBottom>
+              Average Utilization
+            </Typography>
+            <Typography variant="h4" sx={{ color: '#000', fontWeight: 700 }}>
+              {stats.averageUtilization.toFixed(1)}%
+            </Typography>
+          </Box>
+
+          {/* ICON COLOR UNCHANGED */}
+          <Avatar sx={{ bgcolor: 'success.light' }}>
+            <TrendingUp />
+          </Avatar>
+        </Box>
+
+        <LinearProgress
+          variant="determinate"
+          value={stats.averageUtilization}
+          sx={{
+            mt: 2,
+            height: 6,
+            borderRadius: 3,
+            backgroundColor: '#E0F2E9',
+            '& .MuiLinearProgress-bar': {
+              backgroundColor: '#2E7D32'
+            }
+          }}
+        />
+      </CardContent>
+    </Card>
+  </motion.div>
+
+  {/* Monthly Cost */}
+  <motion.div whileHover={{ y: -6 }} transition={{ duration: 0.25 }} style={{ flex: 1, minWidth: 220 }}>
+    <Card
+      sx={{
+        borderRadius: 3,
+        background: 'linear-gradient(180deg, #F2F8FF, #FFFFFF)',
+        boxShadow: '0 10px 30px rgba(0,0,0,0.08)'
+      }}
+    >
+      <CardContent>
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <Box>
+            <Typography sx={{ color: '#000', fontWeight: 600 }} gutterBottom>
+              Monthly Cost
+            </Typography>
+            <Typography variant="h4" sx={{ color: '#000', fontWeight: 700 }}>
+              {formatCurrency(stats.totalMonthlyCost)}
+            </Typography>
+          </Box>
+
+          {/* ICON COLOR UNCHANGED */}
+          <Avatar sx={{ bgcolor: 'info.light' }}>
+            <AttachMoney />
+          </Avatar>
+        </Box>
+
+        <Typography variant="body2" sx={{ mt: 1, color: '#333' }}>
+          {stats.underutilizedDevices} underutilized devices
+        </Typography>
+      </CardContent>
+    </Card>
+  </motion.div>
+
+  {/* Alerts & Issues */}
+  <motion.div whileHover={{ y: -6 }} transition={{ duration: 0.25 }} style={{ flex: 1, minWidth: 220 }}>
+    <Card
+      sx={{
+        borderRadius: 3,
+        background: 'linear-gradient(180deg, #FFF7ED, #FFFFFF)',
+        boxShadow: '0 10px 30px rgba(0,0,0,0.08)'
+      }}
+    >
+      <CardContent>
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <Box>
+            <Typography sx={{ color: '#000', fontWeight: 600 }} gutterBottom>
+              Alerts & Issues
+            </Typography>
+            <Typography variant="h4" sx={{ color: '#000', fontWeight: 700 }}>
+              {stats.overdueReturns + stats.underutilizedDevices}
+            </Typography>
+          </Box>
+
+          {/* ICON COLOR UNCHANGED */}
+          <Avatar sx={{ bgcolor: 'warning.light' }}>
+            <Warning />
+          </Avatar>
+        </Box>
+
+        <Typography variant="body2" sx={{ mt: 1, color: '#333' }}>
+          {stats.overdueReturns} overdue, {stats.underutilizedDevices} underutilized
+        </Typography>
+      </CardContent>
+    </Card>
+  </motion.div>
+
+</Box>
+
 
       {/* Quick Filters */}
       <Card sx={{ mb: 4 }}>

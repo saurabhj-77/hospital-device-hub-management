@@ -452,79 +452,134 @@ const DeviceUpdateRecall = () => {
       </Box>
 
       {/* Stats Cards */}
-      <Box sx={{ display: 'flex', gap: 3, mb: 4 }}>
-        <motion.div whileHover={{ scale: 1.02 }} style={{ flex: 1 }}>
-          <Card>
-            <CardContent>
-              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <Box>
-                  <Typography color="text.secondary" gutterBottom>
-                    Pending Updates
-                  </Typography>
-                  <Typography variant="h4" color="warning.main">
-                    {updateStats.available + updateStats.pending}
-                  </Typography>
-                </Box>
-                <Avatar sx={{ bgcolor: 'warning.light' }}>
-                  <Pending />
-                </Avatar>
-              </Box>
-              <LinearProgress 
-                variant="determinate" 
-                value={((updateStats.available + updateStats.pending) / updateStats.total) * 100} 
-                sx={{ mt: 2 }}
-                color="warning"
-              />
-            </CardContent>
-          </Card>
-        </motion.div>
+{/* Stats Cards */}
+<Box sx={{ display: 'flex', gap: 3, mb: 4 }}>
+  {/* Pending Updates */}
+  <motion.div whileHover={{ y: -6 }} transition={{ duration: 0.25 }} style={{ flex: 1 }}>
+    <Card
+      sx={{
+        borderRadius: 3,
+        background: 'linear-gradient(180deg, #FFF8E1, #FFFFFF)',
+        boxShadow: '0 10px 30px rgba(0,0,0,0.08)',
+        transition: 'all 0.3s ease'
+      }}
+    >
+      <CardContent>
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <Box>
+            <Typography sx={{ color: '#000', fontWeight: 500 }} gutterBottom>
+              Pending Updates
+            </Typography>
+            <Typography variant="h4" sx={{ color: '#000', fontWeight: 700 }}>
+              {updateStats.available + updateStats.pending}
+            </Typography>
+          </Box>
 
-        <motion.div whileHover={{ scale: 1.02 }} style={{ flex: 1 }}>
-          <Card>
-            <CardContent>
-              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <Box>
-                  <Typography color="text.secondary" gutterBottom>
-                    Active Recalls
-                  </Typography>
-                  <Typography variant="h4" color="error.main">
-                    {recallStats.active}
-                  </Typography>
-                </Box>
-                <Avatar sx={{ bgcolor: 'error.light' }}>
-                  <Warning />
-                </Avatar>
-              </Box>
-              <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                {recallStats.classI} Class I, {recallStats.classII} Class II
-              </Typography>
-            </CardContent>
-          </Card>
-        </motion.div>
+          <Avatar
+            sx={{
+              bgcolor: 'primary.light' ,
+              width: 48,
+              height: 48
+            }}
+          >
+            <Pending />
+          </Avatar>
+        </Box>
 
-        <motion.div whileHover={{ scale: 1.02 }} style={{ flex: 1 }}>
-          <Card>
-            <CardContent>
-              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <Box>
-                  <Typography color="text.secondary" gutterBottom>
-                    Compliance Score
-                  </Typography>
-                  <Typography variant="h4" color="success.main">
-                    98.5%
-                  </Typography>
-                </Box>
-                <Avatar sx={{ bgcolor: 'success.light' }}>
-                  <Security />
-                </Avatar>
-              </Box>
-              <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                Last audit: Today
-              </Typography>
-            </CardContent>
-          </Card>
-        </motion.div>
-      </Box>
+        <LinearProgress
+          variant="determinate"
+          value={((updateStats.available + updateStats.pending) / updateStats.total) * 100}
+          sx={{
+            mt: 2,
+            height: 6,
+            borderRadius: 3,
+            backgroundColor: '#FFE8A1',
+            '& .MuiLinearProgress-bar': {
+              backgroundColor: '#000'
+            }
+          }}
+        />
+      </CardContent>
+    </Card>
+  </motion.div>
+
+  {/* Active Recalls */}
+  <motion.div whileHover={{ y: -6 }} transition={{ duration: 0.25 }} style={{ flex: 1 }}>
+    <Card
+      sx={{
+        borderRadius: 3,
+        background: 'linear-gradient(180deg, #FDECEA, #FFFFFF)',
+        boxShadow: '0 10px 30px rgba(0,0,0,0.08)'
+      }}
+    >
+      <CardContent>
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <Box>
+            <Typography sx={{ color: '#000', fontWeight: 500 }} gutterBottom>
+              Active Recalls
+            </Typography>
+            <Typography variant="h4" sx={{ color: '#000', fontWeight: 700 }}>
+              {recallStats.active}
+            </Typography>
+          </Box>
+
+          <Avatar
+            sx={{
+              bgcolor: 'primary.light' ,
+              width: 48,
+              height: 48
+            }}
+          >
+            <Warning />
+          </Avatar>
+        </Box>
+
+        <Typography variant="body2" sx={{ mt: 1, color: '#333' }}>
+          {recallStats.classI} Class I, {recallStats.classII} Class II
+        </Typography>
+      </CardContent>
+    </Card>
+  </motion.div>
+
+  {/* Compliance Score */}
+  <motion.div whileHover={{ y: -6 }} transition={{ duration: 0.25 }} style={{ flex: 1 }}>
+    <Card
+      sx={{
+        borderRadius: 3,
+        background: 'linear-gradient(180deg, #E9F7EF, #FFFFFF)',
+        boxShadow: '0 10px 30px rgba(0,0,0,0.08)'
+      }}
+    >
+      <CardContent>
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <Box>
+            <Typography sx={{ color: '#000', fontWeight: 500 }} gutterBottom>
+              Compliance Score
+            </Typography>
+            <Typography variant="h4" sx={{ color: '#000', fontWeight: 700 }}>
+              98.5%
+            </Typography>
+          </Box>
+
+          <Avatar
+            sx={{
+              bgcolor: 'primary.light',
+              width: 48,
+              height: 48
+            }}
+          >
+            <Security />
+          </Avatar>
+        </Box>
+
+        <Typography variant="body2" sx={{ mt: 1, color: '#333' }}>
+          Last audit: Today
+        </Typography>
+      </CardContent>
+    </Card>
+  </motion.div>
+</Box>
+
 
       {/* Main Content Tabs */}
       <Card sx={{ mb: 4 }}>
